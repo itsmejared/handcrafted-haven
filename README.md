@@ -9,6 +9,7 @@ with customers who appreciate unique handmade products.
 - Isaac Miti (ikayz)
 - Laston James Sichali
 - Immanuel Chinenye Njibie
+- Rex Jonathan Kapoloma (Rex407)
 
 ## Project Description
 Handcrafted Haven provides a platform for artisans to 
