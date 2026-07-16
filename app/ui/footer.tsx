@@ -1,4 +1,5 @@
-import { AtSign, MessageCircle, Video } from 'lucide-react';
+import { FaFacebook, FaXTwitter, FaInstagram } from 'react-icons/fa6';
+import { Star } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -12,14 +13,14 @@ export default function Footer() {
               Connecting artisans with people who appreciate the beauty of handmade products.
             </p>
             <div className="flex gap-4">
-              <a href="#" aria-label="Instagram" className="hover:text-[#C4622D] transition-colors">
-                <AtSign className="w-5 h-5" />
-              </a>
               <a href="#" aria-label="Facebook" className="hover:text-[#C4622D] transition-colors">
-                <MessageCircle className="w-5 h-5" />
+                <FaFacebook className="w-5 h-5" />
               </a>
-              <a href="#" aria-label="YouTube" className="hover:text-[#C4622D] transition-colors">
-                <Video className="w-5 h-5" />
+              <a href="#" aria-label="Twitter" className="hover:text-[#C4622D] transition-colors">
+                <FaXTwitter className="w-5 h-5" />
+              </a>
+              <a href="#" aria-label="Instagram" className="hover:text-[#C4622D] transition-colors">
+                <FaInstagram className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -29,6 +30,11 @@ export default function Footer() {
               <li><a href="/shop" className="hover:text-[#C4622D] transition-colors">Shop</a></li>
               <li><a href="/sellers" className="hover:text-[#C4622D] transition-colors">Become a Seller</a></li>
               <li><a href="/about" className="hover:text-[#C4622D] transition-colors">About Us</a></li>
+              <li>
+                <a href="/reviews" className="hover:text-[#C4622D] transition-colors flex items-center gap-1.5">
+                  <Star className="w-4 h-4" /> Reviews
+                </a>
+              </li>
             </ul>
           </div>
           <div>
