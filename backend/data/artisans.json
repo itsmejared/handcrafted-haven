@@ -1,0 +1,56 @@
+[
+  {
+    "id": "clay-and-co",
+    "name": "Clay & Co",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=clay",
+    "bio": "Handcrafting functional ceramics and pottery inspired by natural landscapes. Each piece is thrown and glazed in our small backyard studio.",
+    "rating": 4.9,
+    "reviewCount": 42,
+    "joined": "2024-03"
+  },
+  {
+    "id": "knotted-dreams",
+    "name": "Knotted Dreams",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=knotted",
+    "bio": "Weaving bohemian vibes into modern homes. Specializing in macramé wall hangings, plant hangers, and custom fiber art creations.",
+    "rating": 4.8,
+    "reviewCount": 29,
+    "joined": "2025-01"
+  },
+  {
+    "id": "color-flow-studio",
+    "name": "Color Flow Studio",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=color",
+    "bio": "Creating sustainable wearable art using organic materials and traditional hand-dyeing techniques. Colorful scarves, wraps, and garments.",
+    "rating": 4.7,
+    "reviewCount": 18,
+    "joined": "2024-08"
+  },
+  {
+    "id": "strings-and-things",
+    "name": "Strings & Things",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=strings",
+    "bio": "Luthiers dedicated to crafting fine acoustic instruments. Every guitar and ukulele is built by hand with hand-selected tone woods.",
+    "rating": 5.0,
+    "reviewCount": 8,
+    "joined": "2023-11"
+  },
+  {
+    "id": "pure-botanicals",
+    "name": "Pure Botanicals",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=pure",
+    "bio": "All-natural, plant-based skincare crafted in small batches. We use raw honey, organic essential oils, and wild-harvested herbs.",
+    "rating": 4.9,
+    "reviewCount": 56,
+    "joined": "2024-01"
+  },
+  {
+    "id": "artisan-brush-co",
+    "name": "Artisan Brush Co",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=artisan",
+    "bio": "Fine art prints and original paintings bringing the serenity of nature indoors. Specializing in watercolors, gouache, and landscape acrylics.",
+    "rating": 4.6,
+    "reviewCount": 35,
+    "joined": "2025-02"
+  }
+]
