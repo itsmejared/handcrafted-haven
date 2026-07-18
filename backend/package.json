@@ -1,7 +1,7 @@
 {
   "name": "handcrafted-haven-server",
   "version": "1.0.0",
-  "description": "Mock API server for Handcrafted Haven",
+  "description": "API server for Handcrafted Haven",
   "main": "server.js",
   "type": "module",
   "scripts": {
