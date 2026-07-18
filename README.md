@@ -1,6 +1,10 @@
+====================================================================
+ARCHIVO 1: README.md
+====================================================================
+
 # Handcrafted Haven
 
-A virtual marketplace connecting artisans and crafters with customers who appreciate unique handmade products.
+An innovative web application that provides a platform for artisans and crafters to showcase and sell their unique handcrafted items. It serves as a virtual marketplace, connecting talented creators with potential customers who appreciate the beauty and quality of handmade products.
 
 ## Team Members
 
@@ -13,59 +17,47 @@ A virtual marketplace connecting artisans and crafters with customers who apprec
 
 ---
 
-## Project Description
+## Project Overview & Features
 
-Handcrafted Haven is a full-stack web application that connects artisans with customers looking for unique handmade products.
+The application focuses on fostering a sense of community, supporting local artisans, and promoting sustainable consumption.
 
-The project is organized into two independent applications:
-
-- **Frontend** – Built with Next.js, React, and Tailwind CSS.
-- **Backend** – REST API built with Node.js and Express.
-
----
-
-## Project Structure
-
-```
-handcrafted-haven/
-│
-├── backend/          # Node.js + Express API
-│   ├── data/
-│   ├── server.js
-│   ├── package.json
-│   └── ...
-│
-├── frontend/         # Next.js application
-│   ├── app/
-│   ├── public/
-│   ├── package.json
-│   └── ...
-│
-├── .gitignore
-└── README.md
-```
+- **Seller Profiles:** Authenticated sellers have dedicated profiles to showcase their craftsmanship and share their stories.
+- **Product Listings:** Artisans can list items for sale with descriptions, pricing, and images. Users can browse the catalog and filter by category or price range.
+- **Reviews and Ratings:** Any registered user can leave a rating (1-5 stars) and a written review for a product.
+- **Accessibility & Design:** The application complies with Web Content Accessibility Guidelines (WCAG) 2.1, Level AA. It features responsive web design principles for a seamless experience across desktop, tablet, and mobile devices.
 
 ---
 
 ## Tech Stack
 
-### Frontend
+This project is built as a unified Full-Stack application using the modern Next.js framework, eliminating the need for separate frontend and backend directories.
 
-- Next.js
-- React
-- Tailwind CSS
+- **Frontend:** React, Next.js (App Router), Tailwind CSS.
+- **Backend:** Node.js Serverless Functions via Next.js API Routes (`app/api/`).
+- **Database:** PostgreSQL hosted on Neon (Serverless Postgres).
+- **Project Management & Deployment:** Git, GitHub Projects, and Vercel.
 
-### Backend
+---
 
-- Node.js
-- Express
-- PostgreSQL
+## Project Structure
 
-### Tools
-
-- GitHub
-- GitHub Projects
-- Vercel (Frontend)
+handcrafted-haven/
+├── app/
+│ ├── api/ # Serverless Backend API Routes
+│ │ ├── auth/ # Registration & Login endpoints
+│ │ ├── categories/ # Category data fetching
+│ │ ├── products/ # Product catalog & filtering
+│ │ └── sellers/ # Artisan profile data
+│ ├── lib/ # Shared logic and configurations
+│ │ ├── db.ts # PostgreSQL Lazy Singleton connection
+│ │ └── types.ts # TypeScript interfaces & Data Models
+│ ├── ui/ # Reusable UI components (Header, Footer)
+│ ├── layout.tsx # Global Root Layout
+│ └── page.tsx # Dynamic Landing Page (Server Component)
+├── public/ # Static assets and optimized images
+├── .env.local # Environment variables (Git Ignored!)
+├── .gitignore # Version control exclusions
+└── package.json # Unified dependencies
 
 ---
 
@@ -73,69 +65,38 @@ handcrafted-haven/
 
 ### 1. Clone the repository
 
-```bash
-git clone <repository-url>
+git clone https://github.com/itsmejared/handcrafted-haven.git
 cd handcrafted-haven
-```
 
----
+### 2. Configure Environment Variables
 
-## Running the Backend
+Create a .env.local file directly in the root directory of the project:
 
-Navigate to the backend folder:
+# NEON POSTGRESQL CONNECTION STRING (DEVELOPMENT BRANCH)
 
-```bash
-cd backend
-```
+DATABASE_URL=postgresql://your_user:your_password@your_neon_host/neondb?sslmode=require&uselibpqcompat=true
 
-Install dependencies:
+# SECRET STRING FOR JWT SIGNING
 
-```bash
+JWT_SECRET=your_super_secret_jwt_string_here
+
+> Note: Never commit the .env.local file to GitHub. Ensure it is listed in your .gitignore.
+
+### 3. Install Dependencies
+
+Install the packages using pnpm from the root directory:
 pnpm install
-```
 
-Start the server:
+### 4. Run the Development Server
 
-```bash
+Start the unified frontend and backend environment:
 pnpm dev
-```
 
-By default the backend runs on:
-
-```
-http://localhost:5001/
-```
+Open your browser and navigate to http://localhost:3000.
+To test the database connection, navigate to http://localhost:3000/api/categories.
 
 ---
 
-## Running the Frontend
+## Collaboration & Deployment Guidelines
 
-Open another terminal and navigate to the frontend folder:
-
-```bash
-cd frontend
-```
-
-Install dependencies:
-
-```bash
-pnpm install
-```
-
-Start the development server:
-
-```bash
-pnpm dev
-```
-
-Open:
-
-```
-http://localhost:3000
-```
-
----
-
-## Notes
-
-The frontend and backend are independent applications and must be installed and started separately.
+- **Pull Requests:** Never push directly to the main branch. Create dedicated task branches stemming from the GitHub Project Board issues.

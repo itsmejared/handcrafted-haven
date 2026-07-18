@@ -1,8 +1,0 @@
-[
-  { "id": "jewelry", "name": "Jewelry", "emoji": "💍", "desc": "Handcrafted rings, necklaces, and bracelets" },
-  { "id": "home-decor", "name": "Home Decor", "emoji": "🏺", "desc": "Unique pieces to beautify your space" },
-  { "id": "clothing", "name": "Clothing", "emoji": "🧵", "desc": "One-of-a-kind wearable art" },
-  { "id": "music-instruments", "name": "Music & Instruments", "emoji": "🎸", "desc": "Custom handcrafted guitars, ukuleles, and more" },
-  { "id": "bath-beauty", "name": "Bath & Beauty", "emoji": "🧴", "desc": "Handmade soaps, lotions, and natural skincare" },
-  { "id": "art-collectibles", "name": "Art & Collectibles", "emoji": "🎨", "desc": "Original artwork and unique collectible pieces" }
-]
