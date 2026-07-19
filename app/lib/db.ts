@@ -9,7 +9,7 @@ export const initDb = () => {
       connectionString: process.env.DATABASE_URL,
       max: 10, // Max simultaneous connections per function
       idleTimeoutMillis: 15000, // Close inactive connections
-      connectionTimeoutMillis: 2000,
+      connectionTimeoutMillis: 15000, // 15 seconds to allow for serverless/Neon database cold starts
     });
     console.log("🐘 Connection Pool is ready!");
   }
