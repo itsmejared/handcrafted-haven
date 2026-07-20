@@ -17,6 +17,7 @@ export default function Header() {
 
         {/* Desktop links - stretches and spreads across available width */}
         <div className="hidden md:flex flex-1 items-center justify-evenly text-[#3D2B1F] font-medium mx-8">
+          <Link href="/" className="hover:text-[#C4622D] transition-colors">Home</Link>
           <Link href="/shop" className="hover:text-[#C4622D] transition-colors">Shop</Link>
           <Link href="/sellers" className="hover:text-[#C4622D] transition-colors">Sellers</Link>
           <Link href="/about" className="hover:text-[#C4622D] transition-colors">About</Link>
@@ -47,6 +48,7 @@ export default function Header() {
         {/* Mobile menu panel */}
         {menuOpen && (
           <div className="absolute top-full left-0 right-0 flex flex-col gap-4 bg-[#FDFAF6] border-b-4 border-[#7C9E87] shadow-md px-6 py-6 md:hidden z-50">
+            <Link href="/" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>Home</Link>
             <Link href="/shop" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>Shop</Link>
             <Link href="/sellers" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>Sellers</Link>
             <Link href="/about" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>About</Link>
