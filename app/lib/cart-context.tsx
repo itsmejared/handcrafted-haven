@@ -23,6 +23,12 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  function showToast(message: string) {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 2200);
+  }
 
   function addItem(newItem: Omit<CartItem, 'quantity'>) {
     setItems((prev) => {
@@ -34,6 +40,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { ...newItem, quantity: 1 }];
     });
+    showToast(`${newItem.name} added to cart!`);
   }
 
   function removeItem(name: string) {
@@ -55,6 +62,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
       value={{ items, addItem, removeItem, updateQuantity, itemCount, subtotal }}
     >
       {children}
+      {toastMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#3D2B1F] text-[#FDFAF6] px-6 py-3 rounded-full shadow-xl z-[100] text-sm font-medium animate-fade-in"
+        >
+          {toastMessage}
+        </div>
+      )}
     </CartContext.Provider>
   );
 }
