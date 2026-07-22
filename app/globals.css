@@ -13,3 +13,11 @@ body {
   color: var(--dark);
   font-family: 'Inter', sans-serif;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out;
+}
