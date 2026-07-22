@@ -37,9 +37,9 @@ export default function Header() {
         </div>
 
         <div className="hidden md:flex gap-4 shrink-0">
-          <button className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors">
+          <Link href="/login" className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors">
             Log in
-          </button>
+          </Link>
           <button className="px-4 py-2 bg-[#C4622D] text-white rounded-full hover:bg-[#3D2B1F] transition-colors">
             Sign up
           </button>
@@ -66,9 +66,9 @@ export default function Header() {
               <Search className="w-4 h-4" /> Search
             </Link>
             <div className="flex gap-3 pt-2">
-              <button className="flex-1 px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full">
+              <Link href="/login" onClick={() => setMenuOpen(false)} className="flex-1 px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center">
                 Log in
-              </button>
+              </Link>
               <button className="flex-1 px-4 py-2 bg-[#C4622D] text-white rounded-full">
                 Sign up
               </button>
