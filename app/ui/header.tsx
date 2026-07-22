@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, Search } from 'lucide-react';
+import { Menu, X, Search, ShoppingCart } from 'lucide-react';
+import { useCart } from '@/app/lib/cart-context';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { itemCount } = useCart();
 
   return (
     <>
@@ -23,6 +25,14 @@ export default function Header() {
           <Link href="/about" className="hover:text-[#C4622D] transition-colors">About</Link>
           <Link href="/search" aria-label="Search" className="hover:text-[#C4622D] transition-colors">
             <Search className="w-5 h-5" />
+          </Link>
+          <Link href="/cart" aria-label="Cart" className="relative hover:text-[#C4622D] transition-colors">
+            <ShoppingCart className="w-5 h-5" />
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#C4622D] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {itemCount}
+              </span>
+            )}
           </Link>
         </div>
 

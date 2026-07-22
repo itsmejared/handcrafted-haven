@@ -3,6 +3,7 @@ import Header from "@/app/ui/header";
 import Footer from "@/app/ui/footer";
 import { getDb } from "@/app/lib/db";
 import { Category } from "@/app/lib/types";
+import AddToCartButton from "@/app/ui/add-to-cart-button";
 
 // Extended interface specifically for UI presentation to join the seller name
 interface StorefrontProduct {
@@ -194,9 +195,12 @@ export default async function Home() {
                   <span className="text-xl font-bold text-[#C4622D]">
                     ${Number(product.price).toFixed(2)}
                   </span>
-                  <button className="px-4 py-2 bg-[#C4622D] text-white rounded-full text-sm hover:bg-[#3D2B1F] transition-colors">
-                    Add to Cart
-                  </button>
+                  <AddToCartButton
+                    name={product.title}
+                    price={Number(product.price)}
+                    image={product.image_url}
+                    seller={product.seller_name}
+                  />
                 </div>
               </div>
             </div>

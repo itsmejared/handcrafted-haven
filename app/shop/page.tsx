@@ -1,6 +1,7 @@
 import Header from '@/app/ui/header';
 import Footer from '@/app/ui/footer';
 import { products } from '@/app/lib/data';
+import AddToCartButton from '@/app/ui/add-to-cart-button';
 
 export default function ShopPage() {
   return (
@@ -33,9 +34,12 @@ export default function ShopPage() {
                 <div className="text-sm text-[#C4622D] mb-3">⭐⭐⭐⭐⭐ <span className="text-[#3D2B1F] opacity-60">(24 reviews)</span></div>
                 <div className="flex items-center justify-between">
                   <span className="text-xl font-bold text-[#C4622D]">{product.price}</span>
-                  <button className="px-4 py-2 bg-[#C4622D] text-white rounded-full text-sm hover:bg-[#3D2B1F] transition-colors">
-                    Add to Cart
-                  </button>
+                  <AddToCartButton
+                    name={product.name}
+                    price={Number(product.price.replace('$', ''))}
+                    image={product.image}
+                    seller={product.seller}
+                  />
                 </div>
               </div>
             </div>
