@@ -5,21 +5,11 @@ import Header from '@/app/ui/header';
 import Footer from '@/app/ui/footer';
 import AddToCartButton from '@/app/ui/add-to-cart-button';
 import { Search } from 'lucide-react';
-
-interface SearchProduct {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  image_url: string;
-  image_alt: string;
-  seller_name: string;
-  category_name: string;
-}
+import { ProductWithDetails } from '@/app/lib/types';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchProduct[]>([]);
+  const [results, setResults] = useState<ProductWithDetails[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searched, setSearched] = useState(false);
@@ -42,7 +32,7 @@ export default function SearchPage() {
         throw new Error('Failed to fetch search results.');
       }
 
-      const data: SearchProduct[] = await res.json();
+      const data: ProductWithDetails[] = await res.json();
       setResults(data);
     } catch (err) {
       console.error('Search error:', err);

@@ -32,6 +32,14 @@ export interface Product {
   created_at: string;
 }
 
+// Product joined with seller and category names, used wherever a product
+// listing needs to display "by <seller>" / "<category>" without a second
+// round trip (e.g. search results, product grids).
+export interface ProductWithDetails extends Product {
+  seller_name: string;
+  category_name: string;
+}
+
 export interface Review {
   id: string;
   product_id: string;
