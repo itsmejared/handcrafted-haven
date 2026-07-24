@@ -53,7 +53,7 @@ export default function Header() {
                 onClick={logout}
                 className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
               >
-                Log out ({user.name})
+                Log out
               </button>
             </>
           ) : (
@@ -107,7 +107,7 @@ export default function Header() {
                   }}
                   className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
                 >
-                  Log out ({user.name})
+                  Log out
                 </button>
               </>
             ) : (
