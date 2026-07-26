@@ -8,12 +8,60 @@ export const categories = [
 ];
 
 export const products = [
-  { name: "Ceramic Bowl Set", price: "$45", seller: "Clay & Co", image: "/Ceramic Bowls.webp", alt: "Colorful hand-painted ceramic bowls stacked together", category: "Home Decor" },
-  { name: "Macrame Wall Art", price: "$78", seller: "Knotted Dreams", image: "/Macrame Wall Art.webp", alt: "Macrame wall hanging with feather-shaped woven pieces on a wooden dowel", category: "Home Decor" },
-  { name: "Hand-dyed Scarf", price: "$52", seller: "Color Flow Studio", image: "/Hand died Scarf.webp", alt: "Woman wearing a flowing red hand-dyed scarf outdoors", category: "Clothing" },
-  { name: "Custom Guitar", price: "$299", seller: "Strings & Things", image: "/Custom Guitar.webp", alt: "Musician playing an acoustic guitar outdoors", category: "Music & Instruments" },
-  { name: "Lavender Soap Set", price: "$24", seller: "Pure Botanicals", image: "/Lavendar soap set.webp", alt: "Gift-wrapped handmade soap bars tied with ribbon and lavender sprigs", category: "Bath & Beauty" },
-  { name: "Watercolor Print", price: "$65", seller: "Artisan Brush Co", image: "/Watercolor art.webp", alt: "Abstract blue and teal watercolor painting", category: "Art & Collectibles" },
+  {
+    id: "ceramic-bowl-set",
+    name: "Ceramic Bowl Set",
+    price: "$45",
+    seller: "Clay & Co",
+    image: "/Ceramic Bowls.webp",
+    alt: "Colorful hand-painted ceramic bowls stacked together",
+    category: "Home Decor",
+  },
+  {
+    id: "macrame-wall-art",
+    name: "Macrame Wall Art",
+    price: "$78",
+    seller: "Knotted Dreams",
+    image: "/Macrame Wall Art.webp",
+    alt: "Macrame wall hanging with feather-shaped woven pieces on a wooden dowel",
+    category: "Home Decor",
+  },
+  {
+    id: "hand-dyed-scarf",
+    name: "Hand-dyed Scarf",
+    price: "$52",
+    seller: "Color Flow Studio",
+    image: "/Hand died Scarf.webp",
+    alt: "Woman wearing a flowing red hand-dyed scarf outdoors",
+    category: "Clothing",
+  },
+  {
+    id: "custom-guitar",
+    name: "Custom Guitar",
+    price: "$299",
+    seller: "Strings & Things",
+    image: "/Custom Guitar.webp",
+    alt: "Musician playing an acoustic guitar outdoors",
+    category: "Music & Instruments",
+  },
+  {
+    id: "lavender-soap-set",
+    name: "Lavender Soap Set",
+    price: "$24",
+    seller: "Pure Botanicals",
+    image: "/Lavendar soap set.webp",
+    alt: "Gift-wrapped handmade soap bars tied with ribbon and lavender sprigs",
+    category: "Bath & Beauty",
+  },
+  {
+    id: "watercolor-print",
+    name: "Watercolor Print",
+    price: "$65",
+    seller: "Artisan Brush Co",
+    image: "/Watercolor art.webp",
+    alt: "Abstract blue and teal watercolor painting",
+    category: "Art & Collectibles",
+  },
 ];
 
 export interface Seller {
