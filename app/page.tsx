@@ -13,7 +13,10 @@ interface StorefrontProduct {
   price: number;
   image_url: string;
   image_alt: string;
-  seller_name: string; // From the users JOIN query
+  seller_name: string;
+
+  average_rating: number;
+  review_count: number;
 }
 
 export default async function Home() {
@@ -22,6 +25,10 @@ export default async function Home() {
 
   try {
     const db = getDb();
+    function renderStars(rating: number) {
+  const rounded = Math.round(rating);
+  return "★".repeat(rounded) + "☆".repeat(5 - rounded);
+}
 
     // 1. Fetch Categories directly on the server side
     const categoriesResult = await db.query(
@@ -31,19 +38,33 @@ export default async function Home() {
 
     // 2. Fetch Featured Products with Seller Name verification via relational JOIN
     const productsQuery = `
-      SELECT 
-        p.id, 
-        p.title, 
-        p.description, 
-        p.price, 
-        p.image_url, 
-        p.image_alt, 
-        u.name AS seller_name
-      FROM products p
-      JOIN users u ON p.seller_id = u.id
-      ORDER BY p.created_at DESC
-      LIMIT 6;
-    `;
+SELECT
+    p.id,
+    p.title,
+    p.description,
+    p.price,
+    p.image_url,
+    p.image_alt,
+    u.name AS seller_name,
+
+    COALESCE(AVG(r.rating),0) AS average_rating,
+    COUNT(r.id) AS review_count
+
+FROM products p
+
+JOIN users u
+ON p.seller_id = u.id
+
+LEFT JOIN reviews r
+ON p.id = r.product_id
+
+GROUP BY
+p.id,
+u.name
+
+ORDER BY p.created_at DESC
+LIMIT 6;
+`;
     const productsResult = await db.query(productsQuery);
     products = productsResult.rows;
   } catch (error) {
@@ -186,11 +207,13 @@ export default async function Home() {
                   by {product.seller_name}
                 </p>
                 <div className="text-sm text-[#C4622D] mb-3">
-                  ⭐⭐⭐⭐⭐{" "}
-                  <span className="text-[#3D2B1F] opacity-60">
-                    (24 reviews)
-                  </span>
-                </div>
+  ⭐ {Number(product.average_rating).toFixed(1)}
+
+  <span className="text-[#3D2B1F] opacity-60">
+    {" "}
+    ({product.review_count} reviews)
+  </span>
+</div>
                 <div className="flex items-center justify-between">
                   <span className="text-xl font-bold text-[#C4622D]">
                     ${Number(product.price).toFixed(2)}

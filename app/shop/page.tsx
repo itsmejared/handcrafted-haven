@@ -38,12 +38,17 @@ export default function ShopPage() {
                   <h3 className="text-lg font-bold text-[#3D2B1F] mt-1 mb-1">{product.name}</h3>
                   <p className="text-[#7C9E87] text-sm mb-2">by {product.seller}</p>
                   <div className="text-sm text-[#C4622D] mb-3">
-                    {"⭐".repeat(Math.round(average))}
+  {"⭐".repeat(Math.round(Number(product.average_rating)))}
+  {"☆".repeat(5 - Math.round(Number(product.average_rating)))}
 
-                    <span className="text-[#3D2B1F] opacity-60">
-                      ({reviewCount} reviews)
-                    </span>
-                  </div>
+  <span className="ml-2">
+    {Number(product.average_rating).toFixed(1)}
+  </span>
+
+  <span className="text-[#3D2B1F] opacity-60">
+    ({product.review_count} reviews)
+  </span>
+</div>
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold text-[#C4622D]">{product.price}</span>
                     <AddToCartButton
