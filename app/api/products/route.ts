@@ -18,10 +18,23 @@ export async function GET(request: Request) {
 
     let queryText = `
       SELECT p.id, p.title, p.description, p.price, p.image_url, p.image_alt, p.seller_id, p.category_id, p.created_at,
-             u.name AS seller_name, c.name AS category_name
+             u.name AS seller_name, c.name AS category_name,
+             COALESCE(
+               json_agg(
+                 json_build_object(
+                   'id', pi.id,
+                   'product_id', pi.product_id,
+                   'image_url', pi.image_url,
+                   'image_alt', pi.image_alt,
+                   'display_order', pi.display_order
+                 ) ORDER BY pi.display_order
+               ) FILTER (WHERE pi.id IS NOT NULL),
+               '[]'
+             ) AS images
       FROM products p
       JOIN users u ON p.seller_id = u.id
       JOIN categories c ON p.category_id = c.id
+      LEFT JOIN product_images pi ON pi.product_id = p.id
     `;
     const queryParams: any[] = [];
     const whereClauses: string[] = [];
@@ -73,6 +86,13 @@ export async function GET(request: Request) {
       queryText += " WHERE " + whereClauses.join(" AND ");
     }
 
+    // Required because of the json_agg aggregate above — every non-aggregated
+    // selected column must appear here.
+    queryText += `
+      GROUP BY p.id, p.title, p.description, p.price, p.image_url, p.image_alt,
+               p.seller_id, p.category_id, p.created_at, u.name, c.name
+    `;
+
     if (sort === "price-low") {
       queryText += " ORDER BY p.price ASC";
     } else if (sort === "price-high") {
@@ -92,8 +112,11 @@ export async function GET(request: Request) {
   }
 }
 
-// POST: Add a new product (artisan only)
+// POST: Add a new product with one or more images (artisan only)
 export async function POST(request: Request) {
+  const db = getDb();
+  const client = await db.connect();
+
   try {
     const user = await getAuthenticatedUser();
 
@@ -115,16 +138,38 @@ export async function POST(request: Request) {
     const title = body.title;
     const description = body.description;
     const price = body.price;
-    const imageUrl = body.imageUrl || body.image_url;
-    const imageAlt = body.imageAlt || body.image_alt || title || "Product Image";
     const categoryId = body.categoryId || body.category_id;
 
+    // Accept either the new multi-image shape (images: [{ imageUrl, imageAlt }])
+    // or the old single-image shape (imageUrl / imageAlt) for backward compatibility.
+    let images: { imageUrl: string; imageAlt?: string }[] = Array.isArray(body.images)
+      ? body.images
+      : [];
+
+    if (images.length === 0 && (body.imageUrl || body.image_url)) {
+      images = [
+        {
+          imageUrl: body.imageUrl || body.image_url,
+          imageAlt: body.imageAlt || body.image_alt,
+        },
+      ];
+    }
+
     // Validation
-    if (!title || !description || price === undefined || !imageUrl || !categoryId) {
+    if (!title || !description || price === undefined || !categoryId || images.length === 0) {
       return NextResponse.json(
-        { error: "Title, description, price, imageUrl, and categoryId are required." },
+        { error: "Title, description, price, categoryId, and at least one image are required." },
         { status: 400 }
       );
+    }
+
+    for (const img of images) {
+      if (!img.imageUrl || !img.imageUrl.trim()) {
+        return NextResponse.json(
+          { error: "Every image entry must include a non-empty imageUrl." },
+          { status: 400 }
+        );
+      }
     }
 
     const parsedPrice = parseFloat(price);
@@ -135,19 +180,32 @@ export async function POST(request: Request) {
       );
     }
 
-    const db = getDb();
+    const parsedCategoryId = parseInt(categoryId, 10);
+    if (isNaN(parsedCategoryId)) {
+      return NextResponse.json(
+        { error: "categoryId must be a valid number." },
+        { status: 400 }
+      );
+    }
+
+    await client.query("BEGIN");
 
     // Verify category exists
-    const categoryCheck = await db.query("SELECT id FROM categories WHERE id = $1", [parseInt(categoryId, 10)]);
+    const categoryCheck = await client.query("SELECT id FROM categories WHERE id = $1", [parsedCategoryId]);
     if (categoryCheck.rows.length === 0) {
+      await client.query("ROLLBACK");
       return NextResponse.json(
         { error: "Invalid categoryId. Category does not exist." },
         { status: 400 }
       );
     }
 
-    // Insert new product
-    const result = await db.query(
+    const primaryImage = images[0];
+    const primaryImageAlt = (primaryImage.imageAlt || title).trim();
+
+    // Insert the product itself. image_url / image_alt store the primary
+    // image for quick access on cards/search without joining product_images.
+    const result = await client.query(
       `INSERT INTO products (title, description, price, image_url, image_alt, seller_id, category_id)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, title, description, price, image_url AS "imageUrl", image_alt AS "imageAlt", seller_id AS "sellerId", category_id AS "categoryId", created_at`,
@@ -155,19 +213,37 @@ export async function POST(request: Request) {
         title.trim(),
         description.trim(),
         parsedPrice,
-        imageUrl.trim(),
-        imageAlt.trim(),
+        primaryImage.imageUrl.trim(),
+        primaryImageAlt,
         user.id,
-        parseInt(categoryId, 10)
+        parsedCategoryId,
       ]
     );
 
+    const productId = result.rows[0].id;
+
+    // Insert every image (including the primary one) into product_images,
+    // preserving the order the seller entered them in.
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+      await client.query(
+        `INSERT INTO product_images (product_id, image_url, image_alt, display_order)
+         VALUES ($1, $2, $3, $4)`,
+        [productId, img.imageUrl.trim(), (img.imageAlt || title).trim(), i]
+      );
+    }
+
+    await client.query("COMMIT");
+
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (error: any) {
+    await client.query("ROLLBACK");
     console.error("API Error while adding product:", error);
     return NextResponse.json(
       { error: "Internal Server Error while adding product." },
       { status: 500 }
     );
+  } finally {
+    client.release();
   }
 }

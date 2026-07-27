@@ -26,16 +26,20 @@ const pool = new Pool({
   connectionTimeoutMillis: 30000, // 30 seconds to allow for new DB cold starts
 });
 
+// Test customer account used for local dev / manual login testing.
+// NOTE: plaintext password here is only ok because this is a seed script
+// for local/dev data, never for production.
+const customers = [
+  { name: "Test User", email: "user@nextmail.com", password: "123456" },
+];
+
 const sellers = [
-  { name: "Catherine Lewis — Clay & Co", email: "info@clayandco.com", bio: "Catherine throws and glazes custom pottery bowls on her wheel, drawing inspiration from natural textures and colors. Each piece is functional art meant to be used and loved every day.", profile_image_url: "/Catherine Lewis - Pottery artist.webp" },
-  { name: "McKenna Craig — Knotted Dreams", email: "hello@knotteddreams.com", bio: "McKenna designs and knots custom macrame wall art, combining classic technique with modern, minimalist shapes. Each piece is made to order and sized to fit any space.", profile_image_url: "/McKenna Craig - Macrame artist.webp" },
-  { name: "Heather Bradford — Color Flow Studio", email: "design@colorflow.com", bio: "Heather hand-dyes scarves using small-batch techniques that produce rich, one-of-a-kind color patterns. Every scarf is a wearable piece of art.", profile_image_url: "/Heather Bradford - scarf artist.webp" },
-  { name: "Josh Sears — Strings & Things", email: "music@stringsthings.com", bio: "Josh hand-builds custom electric and acoustic guitars, blending traditional woodworking techniques with a passion for tone and playability. Every instrument is one of a kind, built to match the player's style.", profile_image_url: "/Josh Sears - Guitar artist.webp" },
-  { name: "Jennifer Lyons — Pure Botanicals", email: "care@purebotanicals.com", bio: "Jennifer creates custom lavender soap gift sets, bath bombs, and shower bombs using natural ingredients and small-batch methods. Her products are designed to turn everyday self-care into a little luxury.", profile_image_url: "/Jennifer Lyons - soap artist.jpg" },
-  { name: "Sean Johnson — Artisan Brush Co", email: "gallery@artisanbrush.com", bio: "Sean paints original watercolor pieces inspired by landscapes and quiet moments. His work captures light and movement with a loose, expressive style.", profile_image_url: "/Sean Johnson - painter.webp" },
-  { name: "Katrina Burrup — Silver Linings", email: "kb@nextmail.com", bio: "Katrina designs custom jewelry combining sterling silver with hand-fused glass accents, creating pieces that catch the light in unexpected ways. Each item is shaped and finished by hand, blending traditional silversmithing with a modern, artistic touch.", profile_image_url: "/Katrina Burrup - jewelry artist.webp" },
-  { name: "Jilly Michaels — Edge Clothing", email: "hello@jillymichaels.com", bio: "Jilly designs one-of-a-kind clothing pieces, blending sustainable fabrics with bold, wearable silhouettes. Each garment is cut and sewn by hand, made to feel as good as it looks.", profile_image_url: "/Jilly Michaels - clothing designer.webp" },
-  { name: "Nick Fuentas — Weathered and Wood", email: "hello@weatheredandwood.com", bio: "Nick handcrafts custom furniture from reclaimed and solid wood, built to be lived with and passed down. Alongside his furniture, he curates a rotating collection of vintage art and collectibles, sourced piece by piece for their character and story.", profile_image_url: "/Nick Fuentas - artisan.webp" },
+  { name: "Clay & Co", email: "info@clayandco.com", bio: "Artisanal ceramics and functional pottery handmade with love.", profile_image_url: "/Ceramic Bowls.webp" },
+  { name: "Knotted Dreams", email: "hello@knotteddreams.com", bio: "Beautiful modern macrame wall hangings and fiber art.", profile_image_url: "/Macrame Wall Art.webp" },
+  { name: "Color Flow Studio", email: "design@colorflow.com", bio: "Vibrant hand-dyed scarves, clothing, and silk accessories.", profile_image_url: "/Hand died Scarf.webp" },
+  { name: "Strings & Things", email: "music@stringsthings.com", bio: "Custom handcrafted musical instruments and guitars built to last.", profile_image_url: "/Custom Guitar.webp" },
+  { name: "Pure Botanicals", email: "care@purebotanicals.com", bio: "Natural soaps, bath bombs, and organic skincare products.", profile_image_url: "/Lavendar soap set.webp" },
+  { name: "Artisan Brush Co", email: "gallery@artisanbrush.com", bio: "Original landscape and abstract watercolor prints.", profile_image_url: "/Watercolor art.webp" },
 ];
 
 const categories = [
@@ -48,28 +52,15 @@ const categories = [
 ];
 
 const products = [
-  { title: "Ceramic Bowl Set", price: 45.00, sellerName: "Catherine Lewis — Clay & Co", image_url: "/Ceramic Bowls.webp", image_alt: "Colorful hand-painted ceramic bowls stacked together", categoryName: "Home Decor", description: "A gorgeous set of three nesting ceramic bowls, hand-glazed and painted with vibrant patterns." },
-  { title: "Macrame Wall Art", price: 78.00, sellerName: "McKenna Craig — Knotted Dreams", image_url: "/Macrame Wall Art.webp", image_alt: "Macrame wall hanging with feather-shaped woven pieces on a wooden dowel", categoryName: "Home Decor", description: "This intricately hand-knotted macrame wall hanging brings a warm, cozy bohemian vibe to any room." },
-  { title: "Hand-dyed Scarf", price: 52.00, sellerName: "Heather Bradford — Color Flow Studio", image_url: "/Hand died Scarf.webp", image_alt: "Woman wearing a flowing red hand-dyed scarf outdoors", categoryName: "Clothing", description: "A lightweight, luxurious silk scarf individually dyed by hand with rich natural pigments." },
-  { title: "Custom Guitar", price: 299.00, sellerName: "Josh Sears — Strings & Things", image_url: "/Custom Guitar.webp", image_alt: "Musician playing an acoustic guitar outdoors", categoryName: "Music & Instruments", description: "Meticulously crafted acoustic guitar made from fine tonewoods, offering rich tone and excellent playability." },
-  { title: "Lavender Soap Set", price: 24.00, sellerName: "Jennifer Lyons — Pure Botanicals", image_url: "/Lavendar soap set.webp", image_alt: "Gift-wrapped handmade soap bars tied with ribbon and lavender sprigs", categoryName: "Bath & Beauty", description: "A set of four organic lavender essential oil soap bars, gentle on the skin and highly aromatic." },
-  { title: "Watercolor Print", price: 65.00, sellerName: "Sean Johnson — Artisan Brush Co", image_url: "/Watercolor art.webp", image_alt: "Abstract blue and teal watercolor painting", categoryName: "Art & Collectibles", description: "High-quality giclee print of an original abstract watercolor exploration of deep ocean tones." },
+  { title: "Ceramic Bowl Set", price: 45.00, sellerName: "Clay & Co", image_url: "/Ceramic Bowls.webp", image_alt: "Colorful hand-painted ceramic bowls stacked together", categoryName: "Home Decor", description: "A gorgeous set of three nesting ceramic bowls, hand-glazed and painted with vibrant patterns." },
+  { title: "Macrame Wall Art", price: 78.00, sellerName: "Knotted Dreams", image_url: "/Macrame Wall Art.webp", image_alt: "Macrame wall hanging with feather-shaped woven pieces on a wooden dowel", categoryName: "Home Decor", description: "This intricately hand-knotted macrame wall hanging brings a warm, cozy bohemian vibe to any room." },
+  { title: "Hand-dyed Scarf", price: 52.00, sellerName: "Color Flow Studio", image_url: "/Hand died Scarf.webp", image_alt: "Woman wearing a flowing red hand-dyed scarf outdoors", categoryName: "Clothing", description: "A lightweight, luxurious silk scarf individually dyed by hand with rich natural pigments." },
+  { title: "Custom Guitar", price: 299.00, sellerName: "Strings & Things", image_url: "/Custom Guitar.webp", image_alt: "Musician playing an acoustic guitar outdoors", categoryName: "Music & Instruments", description: "Meticulously crafted acoustic guitar made from fine tonewoods, offering rich tone and excellent playability." },
+  { title: "Lavender Soap Set", price: 24.00, sellerName: "Pure Botanicals", image_url: "/Lavendar soap set.webp", image_alt: "Gift-wrapped handmade soap bars tied with ribbon and lavender sprigs", categoryName: "Bath & Beauty", description: "A set of four organic lavender essential oil soap bars, gentle on the skin and highly aromatic." },
+  { title: "Watercolor Print", price: 65.00, sellerName: "Artisan Brush Co", image_url: "/Watercolor art.webp", image_alt: "Abstract blue and teal watercolor painting", categoryName: "Art & Collectibles", description: "High-quality giclee print of an original abstract watercolor exploration of deep ocean tones." },
 ];
 
 async function main() {
-  // SAFETY GUARD: this script permanently destroys all existing data
-  // (users, products, categories, reviews) and cannot be undone.
-  // Require an explicit --force flag to prevent accidental data loss.
-  if (!process.argv.includes("--force")) {
-    console.log("⚠️  SAFETY CHECK: This script will DROP ALL TABLES and delete");
-    console.log("    every user, product, category, and review currently in the database.");
-    console.log("    This includes any real accounts registered since the last seed.");
-    console.log("");
-    console.log("    If you're sure you want to do this, run:");
-    console.log("    node scripts/seed.js --force");
-    process.exit(0);
-  }
-
   const client = await pool.connect();
   try {
     console.log("Connected to database. Setting up database schema...");
@@ -81,6 +72,7 @@ async function main() {
     console.log("Dropping existing tables...");
     await client.query(`
       DROP TABLE IF EXISTS reviews CASCADE;
+      DROP TABLE IF EXISTS product_images CASCADE;
       DROP TABLE IF EXISTS products CASCADE;
       DROP TABLE IF EXISTS categories CASCADE;
       DROP TABLE IF EXISTS users CASCADE;
@@ -88,7 +80,7 @@ async function main() {
 
     // Create Tables
     console.log("Creating tables...");
-    
+
     // Users table
     await client.query(`
       CREATE TABLE users (
@@ -130,6 +122,18 @@ async function main() {
       );
     `);
 
+    // Product images table (one-to-many: a product can have multiple images)
+    await client.query(`
+      CREATE TABLE product_images (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+        image_url TEXT NOT NULL,
+        image_alt TEXT NOT NULL,
+        display_order INT NOT NULL DEFAULT 0,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Reviews table
     await client.query(`
       CREATE TABLE reviews (
@@ -143,6 +147,18 @@ async function main() {
     `);
 
     console.log("Schema created successfully! Seeding data...");
+
+    // Insert Customers (e.g. test/demo login accounts)
+    for (const customer of customers) {
+      const passwordHash = crypto.createHash("sha256").update(customer.password).digest("hex");
+      const res = await client.query(
+        `INSERT INTO users (email, password_hash, role, name)
+         VALUES ($1, $2, $3, $4)
+         RETURNING id`,
+        [customer.email, passwordHash, "customer", customer.name]
+      );
+      console.log(`Inserted customer: ${customer.email} (${res.rows[0].id})`);
+    }
 
     // Insert Sellers
     const sellerIds = {};
@@ -183,12 +199,20 @@ async function main() {
         throw new Error(`Category ID not found for ${prod.categoryName}`);
       }
 
-      await client.query(
+      const productRes = await client.query(
         `INSERT INTO products (title, description, price, image_url, image_alt, seller_id, category_id)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING id`,
         [prod.title, prod.description, prod.price, prod.image_url, prod.image_alt, sellerId, categoryId]
       );
       console.log(`Inserted product: ${prod.title}`);
+
+      // Seed the matching primary image row (display_order 0)
+      await client.query(
+        `INSERT INTO product_images (product_id, image_url, image_alt, display_order)
+         VALUES ($1, $2, $3, $4)`,
+        [productRes.rows[0].id, prod.image_url, prod.image_alt, 0]
+      );
     }
 
     // Commit Transaction
