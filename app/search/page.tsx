@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Header from '@/app/ui/header';
-import Footer from '@/app/ui/footer';
-import AddToCartButton from '@/app/ui/add-to-cart-button';
-import { Search } from 'lucide-react';
-import { ProductWithDetails } from '@/app/lib/types';
+import { useState } from "react";
+import Header from "@/app/ui/header";
+import Footer from "@/app/ui/footer";
+import AddToCartButton from "@/app/ui/add-to-cart-button";
+import { Search } from "lucide-react";
+import { ProductWithDetails } from "@/app/lib/types";
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState<ProductWithDetails[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -22,21 +22,23 @@ export default function SearchPage() {
     }
 
     setLoading(true);
-    setError('');
+    setError("");
     setSearched(true);
 
     try {
-      const res = await fetch(`/api/products?search=${encodeURIComponent(query.trim())}`);
+      const res = await fetch(
+        `/api/products?search=${encodeURIComponent(query.trim())}`,
+      );
 
       if (!res.ok) {
-        throw new Error('Failed to fetch search results.');
+        throw new Error("Failed to fetch search results.");
       }
 
       const data: ProductWithDetails[] = await res.json();
       setResults(data);
     } catch (err) {
-      console.error('Search error:', err);
-      setError('Something went wrong while searching. Please try again.');
+      console.error("Search error:", err);
+      setError("Something went wrong while searching. Please try again.");
       setResults([]);
     } finally {
       setLoading(false);
@@ -48,7 +50,9 @@ export default function SearchPage() {
       <Header />
       <section className="px-6 md:px-12 py-16 md:py-24 bg-[#F5F0E8] min-h-[50vh]">
         <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">Search Products</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">
+            Search Products
+          </h1>
           <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-8"></div>
           <form onSubmit={handleSubmit} className="relative">
             <input
@@ -72,23 +76,25 @@ export default function SearchPage() {
         {/* Results */}
         <div className="max-w-5xl mx-auto mt-16">
           {loading && (
-            <p className="text-center text-[#3D2B1F] opacity-75 text-lg">Searching...</p>
+            <p className="text-center text-[#3D2B1F] opacity-75 text-lg">
+              Searching...
+            </p>
           )}
 
-          {error && (
-            <p className="text-center text-red-500">{error}</p>
-          )}
+          {error && <p className="text-center text-red-500">{error}</p>}
 
           {!loading && !error && searched && results.length === 0 && (
             <p className="text-center text-[#3D2B1F] opacity-75 text-lg">
-              No products found for &ldquo;{query}&rdquo;. Try a different keyword.
+              No products found for &ldquo;{query}&rdquo;. Try a different
+              keyword.
             </p>
           )}
 
           {!loading && results.length > 0 && (
             <>
               <p className="text-center text-[#3D2B1F] opacity-75 mb-8">
-                {results.length} result{results.length !== 1 ? 's' : ''} for &ldquo;{query}&rdquo;
+                {results.length} result{results.length !== 1 ? "s" : ""} for
+                &ldquo;{query}&rdquo;
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                 {results.map((product) => (
@@ -109,8 +115,12 @@ export default function SearchPage() {
                       <span className="text-xs uppercase tracking-wide text-[#7C9E87] font-semibold">
                         {product.category_name}
                       </span>
-                      <h3 className="text-lg font-bold text-[#3D2B1F] mt-1 mb-1">{product.title}</h3>
-                      <p className="text-[#7C9E87] text-sm mb-2">by {product.seller_name}</p>
+                      <h3 className="text-lg font-bold text-[#3D2B1F] mt-1 mb-1">
+                        {product.title}
+                      </h3>
+                      <p className="text-[#7C9E87] text-sm mb-2">
+                        by {product.seller_name}
+                      </p>
                       <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-[#C4622D]">
                           ${Number(product.price).toFixed(2)}
@@ -134,6 +144,3 @@ export default function SearchPage() {
     </main>
   );
 }
-
-
-
