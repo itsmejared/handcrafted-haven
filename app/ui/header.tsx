@@ -42,12 +42,26 @@ export default function Header() {
           {user ? (
             <>
               {user.role === 'seller' && (
-                <Link
-                  href="/account/profile"
-                  className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
-                >
-                  My Profile
-                </Link>
+                <>
+                  <Link
+                    href="/product/new"
+                    className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
+                  >
+                    List a Product
+                  </Link>
+                  <Link
+                    href="/seller/listings"
+                    className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
+                  >
+                    My Listings
+                  </Link>
+                  <Link
+                    href="/account/profile"
+                    className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
+                  >
+                    My Profile
+                  </Link>
+                </>
               )}
               <button
                 onClick={logout}
@@ -92,13 +106,29 @@ export default function Header() {
             {user ? (
               <>
                 {user.role === 'seller' && (
-                  <Link
-                    href="/account/profile"
-                    onClick={() => setMenuOpen(false)}
-                    className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
-                  >
-                    My Profile
-                  </Link>
+                  <>
+                    <Link
+                      href="/product/new"
+                      onClick={() => setMenuOpen(false)}
+                      className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
+                    >
+                      List a Product
+                    </Link>
+                    <Link
+                      href="/seller/listings"
+                      onClick={() => setMenuOpen(false)}
+                      className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
+                    >
+                      My Listings
+                    </Link>
+                    <Link
+                      href="/account/profile"
+                      onClick={() => setMenuOpen(false)}
+                      className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
+                    >
+                      My Profile
+                    </Link>
+                  </>
                 )}
                 <button
                   onClick={() => {
