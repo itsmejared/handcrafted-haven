@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import Header from '@/app/ui/header';
-import Footer from '@/app/ui/footer';
-import { getDb } from '@/app/lib/db';
+import Link from "next/link";
+import Header from "@/app/ui/header";
+import Footer from "@/app/ui/footer";
+import { getDb } from "@/app/lib/db";
 
 interface SellerListing {
   id: string;
@@ -10,17 +10,42 @@ interface SellerListing {
   profile_image_url: string | null;
 }
 
-export default async function SellersPage() {
+export default async function SellersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category } = await searchParams;
   let sellers: SellerListing[] = [];
+  let categoryName: string | null = null;
 
   try {
     const db = getDb();
-    const result = await db.query(
-      `SELECT id, name, bio, profile_image_url FROM users WHERE role = 'seller' ORDER BY name ASC`,
-    );
-    sellers = result.rows;
+
+    if (category) {
+      const catResult = await db.query(
+        `SELECT name FROM categories WHERE id = $1`,
+        [category]
+      );
+      categoryName = catResult.rows[0]?.name || null;
+
+      const result = await db.query(
+        `SELECT DISTINCT u.id, u.name, u.bio, u.profile_image_url
+         FROM users u
+         JOIN products p ON p.seller_id = u.id
+         WHERE u.role = 'seller' AND p.category_id = $1
+         ORDER BY u.name ASC`,
+        [category]
+      );
+      sellers = result.rows;
+    } else {
+      const result = await db.query(
+        `SELECT id, name, bio, profile_image_url FROM users WHERE role = 'seller' ORDER BY name ASC`
+      );
+      sellers = result.rows;
+    }
   } catch (error) {
-    console.error('Database error on sellers page:', error);
+    console.error("Database error on sellers page:", error);
   }
 
   return (
@@ -28,15 +53,29 @@ export default async function SellersPage() {
       <Header />
       <section className="px-6 md:px-8 py-16 bg-[#FDFAF6]">
         <div className="text-center mb-12 max-w-2xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">Meet Our Sellers</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">
+            {categoryName ? `${categoryName} Sellers` : "Meet Our Sellers"}
+          </h1>
           <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-6"></div>
           <p className="text-[#3D2B1F] opacity-75 text-lg">
-            Get to know the artisans behind every handcrafted piece.
+            {categoryName
+              ? `Artisans who create ${categoryName.toLowerCase()} pieces.`
+              : "Get to know the artisans behind every handcrafted piece."}
           </p>
+          {categoryName && (
+            <Link
+              href="/sellers"
+              className="inline-block mt-4 text-sm text-[#C4622D] hover:underline"
+            >
+              View all sellers
+            </Link>
+          )}
         </div>
 
         {sellers.length === 0 ? (
-          <p className="text-center text-[#3D2B1F] opacity-70">No sellers yet.</p>
+          <p className="text-center text-[#3D2B1F] opacity-70">
+            {categoryName ? `No sellers found for ${categoryName}.` : "No sellers yet."}
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
             {sellers.map((seller) => (

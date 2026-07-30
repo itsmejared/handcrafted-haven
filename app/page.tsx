@@ -4,8 +4,8 @@ import Footer from "@/app/ui/footer";
 import { getDb } from "@/app/lib/db";
 import { Category } from "@/app/lib/types";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
+import StopPropagation from "@/app/ui/stop-propagation";
 
-// Extended interface specifically for UI presentation to join the seller name
 interface StorefrontProduct {
   id: string;
   title: string;
@@ -13,7 +13,8 @@ interface StorefrontProduct {
   price: number;
   image_url: string;
   image_alt: string;
-  seller_name: string; // From the users JOIN query
+  seller_name: string;
+  seller_email: string;
 }
 
 export default async function Home() {
@@ -23,13 +24,11 @@ export default async function Home() {
   try {
     const db = getDb();
 
-    // 1. Fetch Categories directly on the server side
     const categoriesResult = await db.query(
       "SELECT id, name, image_url, image_alt, description FROM categories ORDER BY id ASC",
     );
     categories = categoriesResult.rows;
 
-    // 2. Fetch Featured Products with Seller Name verification via relational JOIN
     const productsQuery = `
       SELECT 
         p.id, 
@@ -38,7 +37,8 @@ export default async function Home() {
         p.price, 
         p.image_url, 
         p.image_alt, 
-        u.name AS seller_name
+        u.name AS seller_name,
+        u.email AS seller_email
       FROM products p
       JOIN users u ON p.seller_id = u.id
       ORDER BY p.created_at DESC
@@ -51,7 +51,6 @@ export default async function Home() {
       "Database connection failed on the landing page server component:",
       error,
     );
-    // Graceful fallbacks to maintain structural layout even if database nodes bounce
     categories = [];
     products = [];
   }
@@ -60,7 +59,6 @@ export default async function Home() {
     <main>
       <Header />
 
-      {/* Hero Section */}
       <section className="bg-[#F5F0E8] px-6 md:px-12 py-12 md:py-16">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
           <div className="flex flex-col items-start">
@@ -120,7 +118,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Featured Categories Section */}
       <section className="px-6 md:px-8 py-16 bg-[#FDFAF6]">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-[#3D2B1F] mb-4">
@@ -131,9 +128,10 @@ export default async function Home() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
           {categories.map((category) => (
-            <div
+            <Link
               key={category.id}
-              className="flex flex-col items-center p-8 bg-[#F5F0E8] rounded-2xl hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1 border-b-4 border-[#7C9E87]"
+              href={`/sellers?category=${category.id}`}
+              className="flex flex-col items-center p-8 bg-[#F5F0E8] rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-b-4 border-[#7C9E87]"
             >
               <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg border-4 border-[#FDFAF6] mb-4">
                 <img
@@ -150,12 +148,11 @@ export default async function Home() {
               <p className="text-center text-[#3D2B1F] opacity-70">
                 {category.description}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* Featured Products Section */}
       <section className="px-6 md:px-8 py-16 bg-[#F5F0E8]">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-[#3D2B1F] mb-4">
@@ -165,9 +162,10 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
           {products.map((product) => (
-            <div
+            <Link
               key={product.id}
-              className="bg-[#FDFAF6] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
+              href={`/product/${product.id}`}
+              className="block bg-[#FDFAF6] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="h-48 border-b-4 border-[#7C9E87]">
                 <img
@@ -179,7 +177,7 @@ export default async function Home() {
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold text-[#3D2B1F] mb-1">
+                <h3 className="text-lg font-bold text-[#3D2B1F] mb-1 hover:text-[#C4622D] transition-colors">
                   {product.title}
                 </h3>
                 <p className="text-[#7C9E87] text-sm mb-2">
@@ -195,15 +193,17 @@ export default async function Home() {
                   <span className="text-xl font-bold text-[#C4622D]">
                     ${Number(product.price).toFixed(2)}
                   </span>
-                  <AddToCartButton
-                    name={product.title}
-                    price={Number(product.price)}
-                    image={product.image_url}
-                    seller={product.seller_name}
-                  />
+                  <StopPropagation>
+                    <AddToCartButton
+                      name={product.title}
+                      price={Number(product.price)}
+                      image={product.image_url}
+                      seller={product.seller_name}
+                    />
+                  </StopPropagation>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
