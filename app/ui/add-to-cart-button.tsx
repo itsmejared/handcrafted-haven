@@ -1,6 +1,8 @@
 'use client';
 
 import { useCart } from '@/app/lib/cart-context';
+import { useAuth } from '@/app/lib/auth-context';
+import { useRouter } from 'next/navigation';
 
 interface AddToCartButtonProps {
   name: string;
@@ -11,11 +13,19 @@ interface AddToCartButtonProps {
 
 export default function AddToCartButton({ name, price, image, seller }: AddToCartButtonProps) {
   const { addItem } = useCart();
+  const { user } = useAuth();
+  const router = useRouter();
 
   function handleClick(e: React.MouseEvent) {
     // Prevent this click from bubbling up to any parent Link or card-level handler
     e.preventDefault();
     e.stopPropagation();
+
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
     addItem({ name, price, image, seller });
   }
 

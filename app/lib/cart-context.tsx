@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
+import { useAuth } from '@/app/lib/auth-context';
 
 export interface CartItem {
   name: string;
@@ -24,6 +25,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const { user } = useAuth();
 
   function showToast(message: string) {
     setToastMessage(message);
@@ -31,6 +33,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   function addItem(newItem: Omit<CartItem, 'quantity'>) {
+    if (!user) {
+      showToast('Please log in to add items to your cart.');
+      return;
+    }
+
     setItems((prev) => {
       const existing = prev.find((i) => i.name === newItem.name);
       if (existing) {
