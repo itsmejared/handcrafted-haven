@@ -32,6 +32,13 @@ export interface Product {
   created_at: string;
 }
 
+export interface ProductWithDetails extends Product {
+  seller_name: string;
+  category_name: string;
+  reviews_count: number;
+  rating_average: number;
+}
+
 export interface Review {
   id: string;
   product_id: string;

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Menu, X, Search, ShoppingCart } from 'lucide-react';
-import { useCart } from '@/app/lib/cart-context';
-import { useAuth } from '@/app/lib/auth-context';
+import { useState } from "react";
+import Link from "next/link";
+import { Menu, X, Search, ShoppingCart } from "lucide-react";
+import { useCart } from "@/app/lib/cart-context";
+import { useAuth } from "@/app/lib/auth-context";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,14 +21,29 @@ export default function Header() {
 
         {/* Desktop links - stretches and spreads across available width */}
         <div className="hidden md:flex flex-1 items-center justify-evenly text-[#3D2B1F] font-medium mx-8">
-          <Link href="/" className="hover:text-[#C4622D] transition-colors">Home</Link>
-          <Link href="/shop" className="hover:text-[#C4622D] transition-colors">Shop</Link>
-          <Link href="/sellers" className="hover:text-[#C4622D] transition-colors">Sellers</Link>
-          <Link href="/about" className="hover:text-[#C4622D] transition-colors">About</Link>
-          <Link href="/search" aria-label="Search" className="hover:text-[#C4622D] transition-colors">
-            <Search className="w-5 h-5" />
+          <Link href="/" className="hover:text-[#C4622D] transition-colors">
+            Home
           </Link>
-          <Link href="/cart" aria-label="Cart" className="relative hover:text-[#C4622D] transition-colors">
+          <Link href="/shop" className="hover:text-[#C4622D] transition-colors">
+            Shop
+          </Link>
+          <Link
+            href="/sellers"
+            className="hover:text-[#C4622D] transition-colors"
+          >
+            Sellers
+          </Link>
+          <Link
+            href="/about"
+            className="hover:text-[#C4622D] transition-colors"
+          >
+            About
+          </Link>
+          <Link
+            href="/cart"
+            aria-label="Cart"
+            className="relative hover:text-[#C4622D] transition-colors"
+          >
             <ShoppingCart className="w-5 h-5" />
             {itemCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-[#C4622D] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -41,7 +56,7 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-3 shrink-0">
           {user ? (
             <>
-              {user.role === 'seller' && (
+              {user.role === "seller" && (
                 <Link
                   href="/account/profile"
                   className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
@@ -58,10 +73,16 @@ export default function Header() {
             </>
           ) : (
             <>
-              <Link href="/login" className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors">
+              <Link
+                href="/login"
+                className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
+              >
                 Log in
               </Link>
-              <Link href="/register" className="px-4 py-2 bg-[#C4622D] text-white rounded-full hover:bg-[#3D2B1F] transition-colors">
+              <Link
+                href="/register"
+                className="px-4 py-2 bg-[#C4622D] text-white rounded-full hover:bg-[#3D2B1F] transition-colors"
+              >
                 Sign up
               </Link>
             </>
@@ -72,7 +93,7 @@ export default function Header() {
         <button
           className="md:hidden text-[#3D2B1F]"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
         >
           {menuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
@@ -81,17 +102,38 @@ export default function Header() {
         {/* Mobile menu panel */}
         {menuOpen && (
           <div className="absolute top-full left-0 right-0 flex flex-col gap-4 bg-[#FDFAF6] border-b-4 border-[#7C9E87] shadow-md px-6 py-6 md:hidden z-50">
-            <Link href="/" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>Home</Link>
-            <Link href="/shop" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>Shop</Link>
-            <Link href="/sellers" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>Sellers</Link>
-            <Link href="/about" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>About</Link>
-            <Link href="/search" className="text-[#3D2B1F] font-medium flex items-center gap-2" onClick={() => setMenuOpen(false)}>
-              <Search className="w-4 h-4" /> Search
+            <Link
+              href="/"
+              className="text-[#3D2B1F] font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href="/shop"
+              className="text-[#3D2B1F] font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              Shop
+            </Link>
+            <Link
+              href="/sellers"
+              className="text-[#3D2B1F] font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              Sellers
+            </Link>
+            <Link
+              href="/about"
+              className="text-[#3D2B1F] font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              About
             </Link>
 
             {user ? (
               <>
-                {user.role === 'seller' && (
+                {user.role === "seller" && (
                   <Link
                     href="/account/profile"
                     onClick={() => setMenuOpen(false)}
@@ -112,10 +154,18 @@ export default function Header() {
               </>
             ) : (
               <div className="flex gap-3 pt-2">
-                <Link href="/login" onClick={() => setMenuOpen(false)} className="flex-1 px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center">
+                <Link
+                  href="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex-1 px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
+                >
                   Log in
                 </Link>
-                <Link href="/register" onClick={() => setMenuOpen(false)} className="flex-1 px-4 py-2 bg-[#C4622D] text-white rounded-full text-center">
+                <Link
+                  href="/register"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex-1 px-4 py-2 bg-[#C4622D] text-white rounded-full text-center"
+                >
                   Sign up
                 </Link>
               </div>
