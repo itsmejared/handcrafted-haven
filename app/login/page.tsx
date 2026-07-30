@@ -1,18 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/app/ui/header';
 import Footer from '@/app/ui/footer';
 import { useAuth } from '@/app/lib/auth-context';
+import { useCart } from '@/app/lib/cart-context';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
+  const { addItem } = useCart();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const redirectUrl = searchParams.get('redirect');
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,8 +29,25 @@ export default function LoginPage() {
     setLoading(true);
     const result = await login(formData.email, formData.password);
     setLoading(false);
+
     if (result.success) {
-      router.push('/');
+      // Check if there is a pending item to add to cart
+      const pendingRaw = sessionStorage.getItem('pendingCartItem');
+      if (pendingRaw) {
+        try {
+          const pendingItem = JSON.parse(pendingRaw);
+          addItem(pendingItem);
+        } catch (err) {
+          console.error('Failed to parse pending cart item:', err);
+        }
+        sessionStorage.removeItem('pendingCartItem');
+      }
+
+      // Check return URL from query param or sessionStorage
+      const savedRedirect = sessionStorage.getItem('redirectAfterLogin');
+      sessionStorage.removeItem('redirectAfterLogin');
+      const target = redirectUrl || savedRedirect || '/';
+      router.push(target);
     } else {
       setError(result.error || 'Login failed.');
     }
@@ -84,7 +106,10 @@ export default function LoginPage() {
 
             <p className="text-center text-sm text-[#3D2B1F] opacity-75">
               Don&apos;t have an account?{' '}
-              <Link href="/register" className="text-[#C4622D] font-medium hover:underline">
+              <Link
+                href={redirectUrl ? `/register?redirect=${encodeURIComponent(redirectUrl)}` : '/register'}
+                className="text-[#C4622D] font-medium hover:underline"
+              >
                 Register
               </Link>
             </p>

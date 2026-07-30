@@ -1,15 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/app/ui/header';
 import Footer from '@/app/ui/footer';
 import { useAuth } from '@/app/lib/auth-context';
+import { useCart } from '@/app/lib/cart-context';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { register } = useAuth();
+  const { addItem } = useCart();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,6 +22,8 @@ export default function RegisterPage() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const redirectUrl = searchParams.get('redirect');
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,8 +46,25 @@ export default function RegisterPage() {
       role: formData.role,
     });
     setLoading(false);
+
     if (result.success) {
-      router.push('/');
+      // Check if there is a pending item to add to cart
+      const pendingRaw = sessionStorage.getItem('pendingCartItem');
+      if (pendingRaw) {
+        try {
+          const pendingItem = JSON.parse(pendingRaw);
+          addItem(pendingItem);
+        } catch (err) {
+          console.error('Failed to parse pending cart item:', err);
+        }
+        sessionStorage.removeItem('pendingCartItem');
+      }
+
+      // Check return URL from query param or sessionStorage
+      const savedRedirect = sessionStorage.getItem('redirectAfterLogin');
+      sessionStorage.removeItem('redirectAfterLogin');
+      const target = redirectUrl || savedRedirect || '/';
+      router.push(target);
     } else {
       setError(result.error || 'Registration failed.');
     }
@@ -159,7 +181,10 @@ export default function RegisterPage() {
 
             <p className="text-center text-sm text-[#3D2B1F] opacity-75">
               Already have an account?{' '}
-              <Link href="/register" className="text-[#C4622D] font-medium hover:underline">
+              <Link
+                href={redirectUrl ? `/login?redirect=${encodeURIComponent(redirectUrl)}` : '/login'}
+                className="text-[#C4622D] font-medium hover:underline"
+              >
                 Log in
               </Link>
             </p>

@@ -2,7 +2,7 @@
 
 import { useCart } from '@/app/lib/cart-context';
 import { useAuth } from '@/app/lib/auth-context';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 interface AddToCartButtonProps {
   name: string;
@@ -15,6 +15,8 @@ export default function AddToCartButton({ name, price, image, seller }: AddToCar
   const { addItem } = useCart();
   const { user } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   function handleClick(e: React.MouseEvent) {
     // Prevent this click from bubbling up to any parent Link or card-level handler
@@ -22,7 +24,12 @@ export default function AddToCartButton({ name, price, image, seller }: AddToCar
     e.stopPropagation();
 
     if (!user) {
-      router.push('/login');
+      // Store pending item and return URL in sessionStorage
+      const currentUrl = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
+      sessionStorage.setItem('pendingCartItem', JSON.stringify({ name, price, image, seller }));
+      sessionStorage.setItem('redirectAfterLogin', currentUrl);
+
+      router.push(`/login?redirect=${encodeURIComponent(currentUrl)}`);
       return;
     }
 
