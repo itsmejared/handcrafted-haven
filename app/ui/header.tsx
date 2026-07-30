@@ -4,10 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X, Search, ShoppingCart } from "lucide-react";
 import { useCart } from "@/app/lib/cart-context";
+import { useAuth } from "@/app/lib/auth-context";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { itemCount } = useCart();
+  const { user, logout } = useAuth();
 
   return (
     <>
@@ -51,16 +53,40 @@ export default function Header() {
           </Link>
         </div>
 
-        <div className="hidden md:flex gap-4 shrink-0">
-          <Link
-            href="/login"
-            className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
-          >
-            Log in
-          </Link>
-          <button className="px-4 py-2 bg-[#C4622D] text-white rounded-full hover:bg-[#3D2B1F] transition-colors">
-            Sign up
-          </button>
+        <div className="hidden md:flex items-center gap-3 shrink-0">
+          {user ? (
+            <>
+              {user.role === "seller" && (
+                <Link
+                  href="/account/profile"
+                  className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
+                >
+                  My Profile
+                </Link>
+              )}
+              <button
+                onClick={logout}
+                className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full hover:bg-[#C4622D] hover:text-white transition-colors"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/register"
+                className="px-4 py-2 bg-[#C4622D] text-white rounded-full hover:bg-[#3D2B1F] transition-colors"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -104,18 +130,46 @@ export default function Header() {
             >
               About
             </Link>
-            <div className="flex gap-3 pt-2">
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
-                className="flex-1 px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
-              >
-                Log in
-              </Link>
-              <button className="flex-1 px-4 py-2 bg-[#C4622D] text-white rounded-full">
-                Sign up
-              </button>
-            </div>
+
+            {user ? (
+              <>
+                {user.role === "seller" && (
+                  <Link
+                    href="/account/profile"
+                    onClick={() => setMenuOpen(false)}
+                    className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
+                  >
+                    My Profile
+                  </Link>
+                )}
+                <button
+                  onClick={() => {
+                    logout();
+                    setMenuOpen(false);
+                  }}
+                  className="px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <div className="flex gap-3 pt-2">
+                <Link
+                  href="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex-1 px-4 py-2 text-[#C4622D] border border-[#C4622D] rounded-full text-center"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex-1 px-4 py-2 bg-[#C4622D] text-white rounded-full text-center"
+                >
+                  Sign up
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </nav>
