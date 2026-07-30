@@ -1,24 +1,37 @@
 import { Pool } from "pg";
 
-// Connection pool is saved in global scope
-let _pool: Pool | null = null;
+// Save connection pool in global scope across hot reloads in Next.js development
+declare global {
+  var _postgresPool: Pool | undefined;
+}
 
 export const initDb = () => {
-  if (!_pool) {
-    _pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      max: 10, // Max simultaneous connections per function
-      idleTimeoutMillis: 15000, // Close inactive connections
-      connectionTimeoutMillis: 15000, // 15 seconds to allow for serverless/Neon database cold starts
+  if (!globalThis._postgresPool) {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error("DATABASE_URL environment variable is missing.");
+    }
+
+    const pool = new Pool({
+      connectionString,
+      max: 10,
+      idleTimeoutMillis: 15000,
+      connectionTimeoutMillis: 15000,
     });
+
+    // Handle idle connection errors gracefully without crashing the Node process
+    pool.on("error", (err) => {
+      console.error("Unexpected error on idle PostgreSQL connection pool:", err);
+      // Clear cached pool so subsequent requests recreate a fresh pool
+      globalThis._postgresPool = undefined;
+    });
+
+    globalThis._postgresPool = pool;
     console.log("🐘 Connection Pool is ready!");
   }
-  return _pool;
+  return globalThis._postgresPool;
 };
 
 export const getDb = () => {
-  if (!_pool) {
-    return initDb();
-  }
-  return _pool;
+  return initDb();
 };

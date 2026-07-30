@@ -58,8 +58,16 @@ export async function loginUser(email: string, password: string) {
       sameSite: "lax",
     });
 
-    // Remove password_hash from return object
-    const { password_hash, ...safeUser } = user;
+    // Clean JSON-serializable user payload
+    const safeUser = {
+      id: String(user.id),
+      email: String(user.email),
+      role: user.role,
+      name: String(user.name),
+      bio: user.bio ? String(user.bio) : null,
+      profile_image_url: user.profile_image_url ? String(user.profile_image_url) : null,
+      created_at: user.created_at ? new Date(user.created_at).toISOString() : null,
+    };
 
     return { success: true, user: safeUser };
   } catch (error: any) {
@@ -140,7 +148,17 @@ export async function registerUser(data: RegisterInput) {
       sameSite: "lax",
     });
 
-    return { success: true, user: newUser };
+    const safeUser = {
+      id: String(newUser.id),
+      email: String(newUser.email),
+      role: newUser.role,
+      name: String(newUser.name),
+      bio: newUser.bio ? String(newUser.bio) : null,
+      profile_image_url: newUser.profile_image_url ? String(newUser.profile_image_url) : null,
+      created_at: newUser.created_at ? new Date(newUser.created_at).toISOString() : null,
+    };
+
+    return { success: true, user: safeUser };
   } catch (error: any) {
     console.error("Error in registerUser service:", error);
     return {
