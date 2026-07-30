@@ -6,13 +6,11 @@ import Link from 'next/link';
 import Header from '@/app/ui/header';
 import Footer from '@/app/ui/footer';
 import { useAuth } from '@/app/lib/auth-context';
-import { useCart } from '@/app/lib/cart-context';
 
 export default function RegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { register } = useAuth();
-  const { addItem } = useCart();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -48,18 +46,6 @@ export default function RegisterPage() {
     setLoading(false);
 
     if (result.success) {
-      // Check if there is a pending item to add to cart
-      const pendingRaw = sessionStorage.getItem('pendingCartItem');
-      if (pendingRaw) {
-        try {
-          const pendingItem = JSON.parse(pendingRaw);
-          addItem(pendingItem);
-        } catch (err) {
-          console.error('Failed to parse pending cart item:', err);
-        }
-        sessionStorage.removeItem('pendingCartItem');
-      }
-
       // Check return URL from query param or sessionStorage
       const savedRedirect = sessionStorage.getItem('redirectAfterLogin');
       sessionStorage.removeItem('redirectAfterLogin');

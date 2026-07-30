@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from '@/app/lib/auth-context';
 
 export interface CartItem {
@@ -32,8 +32,35 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setTimeout(() => setToastMessage(null), 2200);
   }
 
+  // Automatically process pending cart items when user logs in
+  useEffect(() => {
+    const isAuthenticated = !!user || (typeof window !== 'undefined' && !!localStorage.getItem('currentUser'));
+    if (isAuthenticated) {
+      const pendingRaw = sessionStorage.getItem('pendingCartItem');
+      if (pendingRaw) {
+        try {
+          const pendingItem = JSON.parse(pendingRaw);
+          setItems((prev) => {
+            const existing = prev.find((i) => i.name === pendingItem.name);
+            if (existing) {
+              return prev.map((i) =>
+                i.name === pendingItem.name ? { ...i, quantity: i.quantity + 1 } : i,
+              );
+            }
+            return [...prev, { ...pendingItem, quantity: 1 }];
+          });
+          showToast(`${pendingItem.name} added to cart!`);
+        } catch (err) {
+          console.error('Error processing pending cart item:', err);
+        }
+        sessionStorage.removeItem('pendingCartItem');
+      }
+    }
+  }, [user]);
+
   function addItem(newItem: Omit<CartItem, 'quantity'>) {
-    if (!user) {
+    const isAuthenticated = !!user || (typeof window !== 'undefined' && !!localStorage.getItem('currentUser'));
+    if (!isAuthenticated) {
       showToast('Please log in to add items to your cart.');
       return;
     }
