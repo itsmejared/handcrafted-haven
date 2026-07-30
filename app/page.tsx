@@ -2,8 +2,9 @@ import Link from "next/link";
 import Header from "@/app/ui/header";
 import Footer from "@/app/ui/footer";
 import { getDb } from "@/app/lib/db";
-import { Category } from "@/app/lib/types";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
+import { getCategories } from "@/app/services/categories";
+import { getProducts } from "./services/products";
 
 // Extended interface specifically for UI presentation to join the seller name
 interface StorefrontProduct {
@@ -17,41 +18,19 @@ interface StorefrontProduct {
 }
 
 export default async function Home() {
-  let categories: Category[] = [];
-  let products: StorefrontProduct[] = [];
+  let products: any[] = [];
+  let categories: any[] = [];
 
   try {
     const db = getDb();
-
-    // 1. Fetch Categories directly on the server side
-    const categoriesResult = await db.query(
-      "SELECT id, name, image_url, image_alt, description FROM categories ORDER BY id ASC",
-    );
-    categories = categoriesResult.rows;
-
-    // 2. Fetch Featured Products with Seller Name verification via relational JOIN
-    const productsQuery = `
-      SELECT 
-        p.id, 
-        p.title, 
-        p.description, 
-        p.price, 
-        p.image_url, 
-        p.image_alt, 
-        u.name AS seller_name
-      FROM products p
-      JOIN users u ON p.seller_id = u.id
-      ORDER BY p.created_at DESC
-      LIMIT 6;
-    `;
-    const productsResult = await db.query(productsQuery);
-    products = productsResult.rows;
+    categories = await getCategories();
+    const response = await getProducts({ page: 1, limit: 3, sort: "newest" });
+    ({ data: products } = response);
   } catch (error) {
     console.error(
       "Database connection failed on the landing page server component:",
       error,
     );
-    // Graceful fallbacks to maintain structural layout even if database nodes bounce
     categories = [];
     products = [];
   }
@@ -159,7 +138,7 @@ export default async function Home() {
       <section className="px-6 md:px-8 py-16 bg-[#F5F0E8]">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-[#3D2B1F] mb-4">
-            Featured Products
+            Newest Products
           </h2>
           <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full"></div>
         </div>
@@ -185,10 +164,23 @@ export default async function Home() {
                 <p className="text-[#7C9E87] text-sm mb-2">
                   by {product.seller_name}
                 </p>
-                <div className="text-sm text-[#C4622D] mb-3">
-                  ⭐⭐⭐⭐⭐{" "}
-                  <span className="text-[#3D2B1F] opacity-60">
-                    (24 reviews)
+                <div className="text-sm text-[#C4622D] mb-3 flex items-center gap-1.5">
+                  <span>
+                    {"★".repeat(Math.round(product.rating_average))}
+                    {"☆".repeat(5 - Math.round(product.rating_average))}
+                  </span>
+
+                  <span className="text-[#3D2B1F] opacity-60 ml-1">
+                    <strong>
+                      {product.reviews_count > 0 ? (
+                        <>
+                          ({product.reviews_count}{" "}
+                          {product.reviews_count === 1 ? "review" : "reviews"})
+                        </>
+                      ) : (
+                        "(No reviews)"
+                      )}
+                    </strong>
                   </span>
                 </div>
                 <div className="flex items-center justify-between">

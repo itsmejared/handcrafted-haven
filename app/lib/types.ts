@@ -49,6 +49,8 @@ export interface ProductWithDetails extends Product {
   seller_name: string;
   category_name: string;
   images?: ProductImage[];
+  reviews_count: number;
+  rating_average: number;
 }
 
 export interface Review {
