@@ -14,6 +14,7 @@ export default function RegisterPage() {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     role: 'customer' as 'customer' | 'seller',
   });
   const [error, setError] = useState('');
@@ -26,8 +27,19 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     setLoading(true);
-    const result = await register(formData);
+    const result = await register({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+    });
     setLoading(false);
     if (result.success) {
       router.push('/');
@@ -94,6 +106,22 @@ export default function RegisterPage() {
             </div>
 
             <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#3D2B1F] mb-2">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                required
+                minLength={6}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-md border border-[#7C9E87]/40 focus:outline-none focus:border-[#C4622D] transition-colors"
+              />
+            </div>
+
+            <div>
               <span className="block text-sm font-medium text-[#3D2B1F] mb-2">I am a...</span>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -131,7 +159,7 @@ export default function RegisterPage() {
 
             <p className="text-center text-sm text-[#3D2B1F] opacity-75">
               Already have an account?{' '}
-              <Link href="/login" className="text-[#C4622D] font-medium hover:underline">
+              <Link href="/register" className="text-[#C4622D] font-medium hover:underline">
                 Log in
               </Link>
             </p>
