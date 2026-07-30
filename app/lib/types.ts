@@ -32,23 +32,11 @@ export interface Product {
   created_at: string;
 }
 
-// A single image belonging to a product (one product can have many).
-export interface ProductImage {
-  id: string;
-  product_id: string;
-  image_url: string;
-  image_alt: string;
-  display_order: number;
-}
-
-// Product joined with seller and category names, used wherever a product
-// listing needs to display "by <seller>" / "<category>" without a second
-// round trip (e.g. search results, product grids). `images` is optional so
-// existing usages that don't request the full image array still compile.
 export interface ProductWithDetails extends Product {
   seller_name: string;
   category_name: string;
-  images?: ProductImage[];
+  reviews_count: number;
+  rating_average: number;
 }
 
 export interface Review {
