@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { loginUser, registerUser, logoutUser } from '@/app/services/auth';
 
 export interface AuthUser {
   id: string;
@@ -45,18 +46,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function login(email: string, password: string) {
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        return { success: false, error: data.error || 'Login failed.' };
+      const result = await loginUser(email, password);
+      if (!result.success || !result.user) {
+        return { success: false, error: result.error || 'Login failed.' };
       }
-      setUser(data);
-      localStorage.setItem('currentUser', JSON.stringify(data));
-      showToast(`Welcome back, ${data.name}!`);
+      setUser(result.user);
+      localStorage.setItem('currentUser', JSON.stringify(result.user));
+      showToast(`Welcome back, ${result.user.name}!`);
       return { success: true };
     } catch (err) {
       console.error('Login error:', err);
@@ -73,18 +69,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     profile_image_url?: string;
   }) {
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
-      if (!res.ok) {
+      const result = await registerUser(data);
+      if (!result.success || !result.user) {
         return { success: false, error: result.error || 'Registration failed.' };
       }
-      setUser(result);
-      localStorage.setItem('currentUser', JSON.stringify(result));
-      showToast(`Welcome, ${result.name}!`);
+      setUser(result.user);
+      localStorage.setItem('currentUser', JSON.stringify(result.user));
+      showToast(`Welcome, ${result.user.name}!`);
       return { success: true };
     } catch (err) {
       console.error('Registration error:', err);
@@ -92,10 +83,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function logout() {
+  async function logout() {
     const name = user?.name;
     setUser(null);
     localStorage.removeItem('currentUser');
+    await logoutUser();
     if (name) showToast(`Logged out. See you soon, ${name}!`);
   }
 
