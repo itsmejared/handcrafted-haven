@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, Search, ShoppingCart } from 'lucide-react';
+import { Menu, X, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/app/lib/cart-context';
 import { useAuth } from '@/app/lib/auth-context';
 
@@ -25,9 +25,6 @@ export default function Header() {
           <Link href="/shop" className="hover:text-[#C4622D] transition-colors">Shop</Link>
           <Link href="/sellers" className="hover:text-[#C4622D] transition-colors">Sellers</Link>
           <Link href="/about" className="hover:text-[#C4622D] transition-colors">About</Link>
-          <Link href="/search" aria-label="Search" className="hover:text-[#C4622D] transition-colors">
-            <Search className="w-5 h-5" />
-          </Link>
           <Link href="/cart" aria-label="Cart" className="relative hover:text-[#C4622D] transition-colors">
             <ShoppingCart className="w-5 h-5" />
             {itemCount > 0 && (
@@ -85,9 +82,6 @@ export default function Header() {
             <Link href="/shop" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>Shop</Link>
             <Link href="/sellers" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>Sellers</Link>
             <Link href="/about" className="text-[#3D2B1F] font-medium" onClick={() => setMenuOpen(false)}>About</Link>
-            <Link href="/search" className="text-[#3D2B1F] font-medium flex items-center gap-2" onClick={() => setMenuOpen(false)}>
-              <Search className="w-4 h-4" /> Search
-            </Link>
 
             {user ? (
               <>

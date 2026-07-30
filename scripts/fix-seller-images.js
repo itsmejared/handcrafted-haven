@@ -29,7 +29,7 @@ const corrections = [
   { email: "info@clayandco.com", correctImage: "/Catherine Lewis - Pottery artist.webp" },
   { email: "hello@knotteddreams.com", correctImage: "/McKenna Craig - Macrame artist.webp" },
   { email: "design@colorflow.com", correctImage: "/Heather Bradford - scarf artist.webp" },
-  { email: "care@purebotanicals.com", correctImage: "/Jennifer Lyons - soap artist.jpg" },
+  { email: "care@purebotanicals.com", correctImage: "/Jennifer Lyons - soap artist.webp" },
   { email: "gallery@artisanbrush.com", correctImage: "/Sean Johnson - painter.webp" },
   { email: "music@stringsthings.com", correctImage: "/Josh Sears - Guitar artist.webp" },
 ];

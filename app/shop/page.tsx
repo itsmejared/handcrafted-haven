@@ -2,7 +2,7 @@ import Header from '@/app/ui/header';
 import Footer from '@/app/ui/footer';
 import { products } from '@/app/lib/data';
 import AddToCartButton from '@/app/ui/add-to-cart-button';
-
+import ShopSearchFilter from '@/app/ui/shop-search-filter';
 export default function ShopPage() {
   return (
     <main>
@@ -12,6 +12,7 @@ export default function ShopPage() {
           <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">Shop All Products</h1>
           <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full"></div>
         </div>
+        <ShopSearchFilter />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
           {products.map((product) => (
             <div

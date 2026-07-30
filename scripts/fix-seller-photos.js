@@ -31,7 +31,7 @@ const photoUpdates = [
   { name: "Knotted Dreams", profile_image_url: "/McKenna Craig - Macrame artist.webp" },
   { name: "Color Flow Studio", profile_image_url: "/Heather Bradford - scarf artist.webp" },
   { name: "Strings & Things", profile_image_url: "/Josh Sears - Guitar artist.webp" },
-  { name: "Pure Botanicals", profile_image_url: "/Jennifer Lyons - soap artist.jpg" },
+  { name: "Pure Botanicals", profile_image_url: "/Jennifer Lyons - soap artist.webp" },
   { name: "Artisan Brush Co", profile_image_url: "/Sean Johnson - painter.webp" },
 ];
 
