@@ -39,7 +39,7 @@ export const sellers: Seller[] = [
     name: "Jennifer Lyons",
     craft: "Handmade Bath & Body",
     bio: "Jennifer creates custom lavender soap gift sets, bath bombs, and shower bombs using natural ingredients and small-batch methods. Her products are designed to turn everyday self-care into a little luxury.",
-    image: "/Jennifer Lyons - soap artist.webp",
+    image: "/users/Jennifer Lyons - soap artist.webp",
     imageAlt: "Jennifer Lyons, handmade bath and body artisan",
   },
   {
