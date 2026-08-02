@@ -39,13 +39,7 @@ export default function Header() {
           >
             About
           </Link>
-          <Link
-            href="/search"
-            aria-label="Search"
-            className="hover:text-[#C4622D] transition-colors"
-          >
-            <Search className="w-5 h-5" />
-          </Link>
+         
           <Link
             href="/cart"
             aria-label="Cart"

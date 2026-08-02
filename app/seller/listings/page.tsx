@@ -37,8 +37,8 @@ export default function MyListingsPage() {
         if (!res.ok) {
           throw new Error('Failed to load your listings.');
         }
-        const data: ProductWithDetails[] = await res.json();
-        setListings(data);
+        const responseBody = await res.json();
+        setListings(responseBody.data);
       } catch (err) {
         console.error('Error loading listings:', err);
         setLoadError('Something went wrong while loading your listings. Please try again.');
