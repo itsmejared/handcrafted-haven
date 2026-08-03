@@ -9,11 +9,13 @@ import { createProduct, updateProduct } from "@/app/services/products";
 interface ProductFormProps {
   initialData?: ProductDetails | null;
   categories: Category[];
+  sellerId: string;
 }
 
 export default function ProductForm({
   initialData,
   categories,
+  sellerId,
 }: ProductFormProps) {
   const router = useRouter();
   const isEditing = Boolean(initialData?.id);
@@ -30,7 +32,6 @@ export default function ProductForm({
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Formatea el precio a 2 decimales en el evento onBlur
   const handlePriceBlur = () => {
     if (price && !isNaN(Number(price))) {
       const formatted = Math.max(0, Number(price)).toFixed(2);
@@ -38,12 +39,10 @@ export default function ProductForm({
     }
   };
 
-  // Convierte la imagen seleccionada a Base64
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        // Límite de 2MB
         setErrorMessage("Image size must be less than 2MB.");
         return;
       }
@@ -58,7 +57,6 @@ export default function ProductForm({
     }
   };
 
-  // Eliminar la imagen seleccionada
   const handleRemoveImage = () => {
     setImagePreview(null);
     setImageBase64("");
@@ -71,10 +69,6 @@ export default function ProductForm({
 
     const formData = new FormData(e.currentTarget);
 
-    // TODO: Reemplazar por el ID dinámico del vendedor autenticado
-    const mockSellerId = "41e9c845-1238-4272-9749-98b160268f91";
-
-    // Preparamos el objeto JSON que tu backend/Zod requiere
     const rawData = {
       title: formData.get("title") as string,
       description: formData.get("description") as string,
@@ -87,18 +81,16 @@ export default function ProductForm({
     };
 
     try {
-      // Invocamos la Server Action respetando sus parámetros
       const result =
         isEditing && initialData?.id
-          ? await updateProduct(initialData.id, mockSellerId, rawData)
-          : await createProduct(mockSellerId, rawData);
+          ? await updateProduct(initialData.id, sellerId, rawData)
+          : await createProduct(sellerId, rawData);
 
       if (!result.success) {
         setErrorMessage(result.error || "Failed to save product.");
         return;
       }
 
-      // Redireccionamos a la lista de productos
       router.push("/product");
       router.refresh();
     } catch (err: any) {

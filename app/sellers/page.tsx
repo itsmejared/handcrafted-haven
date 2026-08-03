@@ -1,29 +1,24 @@
 import Link from "next/link";
-import { getDb } from "@/app/lib/db";
+import { getSellers } from "@/app/services/sellers";
+import Pagination from "@/app/ui/pagination";
 
-interface SellerListing {
-  id: string;
-  name: string;
-  bio: string | null;
-  profile_image_url: string | null;
+interface SellersPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function SellersPage() {
-  let sellers: SellerListing[] = [];
+export default async function SellersPage({ searchParams }: SellersPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Number(resolvedSearchParams.page) || 1;
+  const limit = 6;
 
-  try {
-    const db = getDb();
-    const result = await db.query(
-      `SELECT id, name, bio, profile_image_url FROM users WHERE role = 'seller' ORDER BY name ASC`,
-    );
-    sellers = result.rows;
-  } catch (error) {
-    console.error("Database error on sellers page:", error);
-  }
+  const { sellers, pagination } = await getSellers({
+    page: currentPage,
+    limit,
+  });
 
   return (
     <main>
-      <section className="px-6 md:px-8 py-16 bg-[#FDFAF6]">
+      <section className="px-6 md:px-8 py-16 bg-[#FDFAF6] min-h-screen">
         <div className="text-center mb-12 max-w-2xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">
             Meet Our Sellers
@@ -35,7 +30,7 @@ export default async function SellersPage() {
         </div>
 
         {sellers.length === 0 ? (
-          <p className="text-center text-[#3D2B1F] opacity-70">
+          <p className="text-center text-[#3D2B1F] opacity-70 py-12">
             No sellers yet.
           </p>
         ) : (
@@ -68,6 +63,13 @@ export default async function SellersPage() {
                 </div>
               </Link>
             ))}
+          </div>
+        )}
+
+        {/* Pagination component */}
+        {pagination.totalPages > 1 && (
+          <div className="mt-12 flex justify-center">
+            <Pagination totalPages={pagination.totalPages} />
           </div>
         )}
 

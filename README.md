@@ -1,7 +1,3 @@
-====================================================================
-ARCHIVO 1: README.md
-====================================================================
-
 # Handcrafted Haven
 
 An innovative web application that provides a platform for artisans and crafters to showcase and sell their unique handcrafted items. It serves as a virtual marketplace, connecting talented creators with potential customers who appreciate the beauty and quality of handmade products.
@@ -105,17 +101,17 @@ To test the database connection, navigate to http://localhost:3000/api/categorie
 
 The following seller accounts exist in the database and are ready to use (all share the same password for convenience):
 
-| Seller | Email | Password |
-|---|---|---|
-| Catherine Lewis — Clay & Co | info@clayandco.com | password123 |
-| McKenna Craig — Knotted Dreams | hello@knotteddreams.com | password123 |
-| Heather Bradford — Color Flow Studio | design@colorflow.com | password123 |
-| Josh Sears — Strings & Things | music@stringsthings.com | password123 |
-| Jennifer Lyons — Pure Botanicals | care@purebotanicals.com | password123 |
-| Sean Johnson — Artisan Brush Co | gallery@artisanbrush.com | password123 |
-| Katrina Burrup — Silver Linings | kb@nextmail.com | password123 |
-| Jilly Michaels — Edge Clothing | hello@jillymichaels.com | password123 |
-| Nick Fuentas — Weathered and Wood | hello@weatheredandwood.com | password123 |
+| Seller                               | Email                      | Password    |
+| ------------------------------------ | -------------------------- | ----------- |
+| Catherine Lewis — Clay & Co          | info@clayandco.com         | password123 |
+| McKenna Craig — Knotted Dreams       | hello@knotteddreams.com    | password123 |
+| Heather Bradford — Color Flow Studio | design@colorflow.com       | password123 |
+| Josh Sears — Strings & Things        | music@stringsthings.com    | password123 |
+| Jennifer Lyons — Pure Botanicals     | care@purebotanicals.com    | password123 |
+| Sean Johnson — Artisan Brush Co      | gallery@artisanbrush.com   | password123 |
+| Katrina Burrup — Silver Linings      | kb@nextmail.com            | password123 |
+| Jilly Michaels — Edge Clothing       | hello@jillymichaels.com    | password123 |
+| Nick Fuentas — Weathered and Wood    | hello@weatheredandwood.com | password123 |
 
 You can log in as any of the above at `/login` to test seller features (editing profile, viewing "My Profile"). To test the customer experience, feel free to register a new account at `/register` and select "Customer" as the role.
 

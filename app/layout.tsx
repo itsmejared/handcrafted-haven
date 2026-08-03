@@ -1,29 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { auth } from "@/auth";
+
 import Header from "@/app/ui/header";
 import Footer from "@/app/ui/footer";
-import { CartProvider } from "@/app/lib/cart-context";
-import { AuthProvider } from "@/app/lib/auth-context";
+import { CartProvider } from "@/app/context/cart-context";
+import { AuthProvider, AuthUser } from "@/app/context/auth-context";
 import { ToastProvider } from "@/app/context/toast-context";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { geistSans, geistMono } from "@/app/ui/fonts";
+import "./globals.css";
+
 export const metadata: Metadata = {
   title: "Handcrafted Haven",
   description: "Handcrafted Haven App",
 };
-export default function RootLayout({
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+  const initialUser = (session?.user as AuthUser) || null;
+
   return (
     <html
       lang="en"
@@ -32,7 +31,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ToastProvider>
-          <AuthProvider>
+          <AuthProvider
+            key={initialUser?.id || "guest"}
+            initialUser={initialUser}
+          >
             <CartProvider>
               <Header />
               {children}

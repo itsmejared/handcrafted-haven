@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
+import { auth } from "@/auth";
 import DeleteProductButton from "../ui/product/delete-product-button";
 import Pagination from "@/app/ui/pagination";
 import { Plus, Pencil } from "lucide-react";
@@ -15,13 +16,13 @@ export default async function VendorProductsPage({
   const resolvedParams = await searchParams;
   const page = Number(resolvedParams?.page) || 1;
   const limit = 6;
+  const session = await auth();
 
-  // TODO: Replace with authenticated seller ID from session/cookies
-  const mockSellerId = "41e9c845-1238-4272-9749-98b160268f91";
+  const sellerId = session!.user.id;
 
   // Fetch products directly on the server
   const { data: products, pagination } = await getProductsBySeller(
-    mockSellerId,
+    sellerId,
     page,
     limit,
   );
@@ -68,7 +69,7 @@ export default async function VendorProductsPage({
             </div>
 
             <Link
-              href="/product/new"
+              href="/product/create"
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#C4622D] text-white font-medium rounded-full hover:bg-[#3D2B1F] transition-all duration-300 shadow-md hover:shadow-lg"
             >
               <span className="hidden md:block">Create New Product</span>{" "}
@@ -141,7 +142,7 @@ export default async function VendorProductsPage({
                       const deleteProductWithArgs = deleteProduct.bind(
                         null,
                         product.id,
-                        mockSellerId,
+                        sellerId,
                       );
 
                       return (

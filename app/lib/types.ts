@@ -1,9 +1,9 @@
 // Shared model interfaces representing our PostgreSQL database schema
 
 export interface User {
-  id: string; // UUID format
+  id: string;
   email: string;
-  password_hash: string;
+  password_hash?: string;
   role: "customer" | "seller";
   name: string;
   bio?: string | null;

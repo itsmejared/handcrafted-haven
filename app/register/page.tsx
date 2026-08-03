@@ -3,14 +3,13 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Header from "@/app/ui/header";
-import Footer from "@/app/ui/footer";
-import { useAuth } from "@/app/lib/auth-context";
+import { useAuth } from "@/app/context/auth-context";
+import { success } from "zod";
 
 export default function RegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { register } = useAuth();
+  // const { register } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -37,14 +36,14 @@ export default function RegisterPage() {
     }
 
     setLoading(true);
-    const result = await register({
+    /*const result = await register({
       name: formData.name,
       email: formData.email,
       password: formData.password,
       role: formData.role,
-    });
+    });*/
     setLoading(false);
-
+    const result = { success: false, error: "refactoring" };
     if (result.success) {
       router.push("/");
       // Check return URL from query param or sessionStorage

@@ -1,38 +1,39 @@
 import { notFound } from "next/navigation";
-import { getDb } from "@/app/lib/db";
+import Link from "next/link";
+import { getSellerById } from "@/app/services/sellers";
+import { getProductsBySeller } from "@/app/services/products";
+import Pagination from "@/app/ui/pagination";
+import AddToCartButton from "@/app/ui/add-to-cart-button";
 
-interface SellerProfile {
-  id: string;
-  name: string;
-  bio: string | null;
-  profile_image_url: string | null;
+interface SellerDetailPageProps {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function SellerProfilePage({
+export default async function SellerDetailPage({
   params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+  searchParams,
+}: SellerDetailPageProps) {
   const { id } = await params;
-  let seller: SellerProfile | null = null;
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Number(resolvedSearchParams.page) || 1;
+  const limit = 4;
 
-  try {
-    const db = getDb();
-    const result = await db.query(
-      `SELECT id, name, bio, profile_image_url FROM users WHERE id = $1 AND role = 'seller'`,
-      [id],
-    );
-    seller = result.rows[0] || null;
-  } catch (error) {
-    console.error("Database error on seller profile page:", error);
-  }
+  // Parallel fetch: seller profile and seller products
+  const [seller, productsResult] = await Promise.all([
+    getSellerById(id),
+    getProductsBySeller(id, currentPage, limit),
+  ]);
 
   if (!seller) {
     notFound();
   }
 
+  const { data: products, pagination } = productsResult;
+
   return (
-    <main>
+    <main className="min-h-screen bg-[#FDFAF6]">
+      {/* Seller Hero Section */}
       <section className="px-6 md:px-12 py-16 md:py-20 bg-[#F5F0E8]">
         <div className="max-w-3xl mx-auto text-center">
           <div className="w-full max-w-sm aspect-[3/4] rounded-2xl overflow-hidden shadow-xl border-4 border-[#FDFAF6] mx-auto mb-6 bg-[#E8DFD3]">
@@ -56,6 +57,77 @@ export default async function SellerProfilePage({
             {seller.bio || "This seller has not written a bio yet."}
           </p>
         </div>
+      </section>
+
+      {/* Seller Products Showcase */}
+      <section className="px-6 md:px-12 py-16 max-w-7xl mx-auto">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#3D2B1F] mb-2">
+            Crafts by {seller.name}
+          </h2>
+          <div className="w-16 h-1 bg-[#C4622D] mx-auto rounded-full"></div>
+        </div>
+
+        {products.length === 0 ? (
+          <div className="text-center py-12 bg-[#F5F0E8] rounded-2xl max-w-2xl mx-auto">
+            <p className="text-[#3D2B1F] opacity-75 text-lg">
+              This seller has not published any products yet.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-[#F5F0E8] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+                >
+                  <Link
+                    href={`/product/${product.id}`}
+                    className="block flex-1"
+                  >
+                    <div className="w-full aspect-square overflow-hidden bg-[#E8DFD3]">
+                      <img
+                        src={product.image_url}
+                        alt={product.image_alt || product.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="p-5 flex flex-col">
+                      <span className="text-xs uppercase tracking-wider text-[#7C9E87] font-semibold mb-1">
+                        {product.category_name}
+                      </span>
+                      <h3 className="text-lg font-bold text-[#3D2B1F] line-clamp-1">
+                        {product.title}
+                      </h3>
+                      <p className="text-[#C4622D] font-bold text-xl mt-2">
+                        ${Number(product.price).toFixed(2)}
+                      </p>
+                    </div>
+                  </Link>
+
+                  <div className="p-5 pt-0">
+                    <AddToCartButton
+                      id={product.id}
+                      name={product.title}
+                      price={Number(product.price)}
+                      image={product.image_url}
+                      seller={seller.name}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination controls for seller products */}
+            {pagination.totalPages > 1 && (
+              <div className="mt-12 flex justify-center">
+                <Pagination totalPages={pagination.totalPages} />
+              </div>
+            )}
+          </>
+        )}
       </section>
     </main>
   );

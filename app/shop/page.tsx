@@ -21,7 +21,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const page = Number(resolvedParams?.page) || 1;
   const limit = 6;
 
-  // Ejecutamos ambas consultas en paralelo para acelerar la respuesta del servidor
   const [categories, { data: products, pagination }] = await Promise.all([
     getCategories(),
     getProducts({
@@ -225,6 +224,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                     ${Number(product.price).toFixed(2)}
                   </span>
                   <AddToCartButton
+                    id={product.id}
                     name={product.title}
                     price={Number(product.price)}
                     image={product.image_url}

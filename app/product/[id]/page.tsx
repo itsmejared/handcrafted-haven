@@ -71,6 +71,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
               </p>
 
               <AddToCartButton
+                id={product.id}
                 name={product.title}
                 price={Number(product.price)}
                 image={product.image_url}
