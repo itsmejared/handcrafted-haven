@@ -2,21 +2,44 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import Header from "@/app/ui/header";
 import Footer from "@/app/ui/footer";
-import { getProductsBySeller, deleteProduct } from "@/app/services/products";
+import DeleteProductButton from "../ui/delete-product-button";
+import Pagination from "@/app/ui/pagination";
+import { Plus, Pencil } from "lucide-react";
 import { ProductDetails } from "@/app/lib/types";
+import { getProductsBySeller, deleteProduct } from "@/app/services/products";
 
 interface ProductsPageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
 export default async function VendorProductsPage({
   searchParams,
 }: ProductsPageProps) {
+  const resolvedParams = await searchParams;
+  const page = Number(resolvedParams?.page) || 1;
+  const limit = 6;
+
   // TODO: Replace with authenticated seller ID from session/cookies
   const mockSellerId = "41e9c845-1238-4272-9749-98b160268f91";
 
   // Fetch products directly on the server
-  const products: ProductDetails[] = await getProductsBySeller(mockSellerId);
+  const { data: products, pagination } = await getProductsBySeller(
+    mockSellerId,
+    page,
+    limit,
+  );
+
+  // Stats calculation for high-level vendor insights
+  const totalProducts = products.length;
+  const avgRating =
+    totalProducts > 0
+      ? (
+          products.reduce(
+            (acc, p) => acc + (Number(p.rating_average) || 0),
+            0,
+          ) / totalProducts
+        ).toFixed(1)
+      : "N/A";
 
   // Server Action for deleting products directly
   async function handleDeleteProduct(formData: FormData) {
@@ -34,26 +57,59 @@ export default async function VendorProductsPage({
     <main className="min-h-screen flex flex-col bg-[#F5F0E8]">
       <Header />
 
-      <section className="flex-grow px-6 md:px-12 py-16">
-        <div className="max-w-5xl mx-auto">
-          {/* Header Section */}
-          <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+      <section className="flex-grow px-6 md:px-12 py-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Header & Quick Action */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F]">
                 Product Management
               </h1>
               <div className="w-20 h-1 bg-[#7C9E87] rounded-full mt-2"></div>
               <p className="text-sm text-[#3D2B1F]/70 mt-2">
-                Manage your handcrafted catalog, prices, and stock
+                Manage your handcrafted catalog, edit details, and monitor
+                performance.
               </p>
             </div>
 
             <Link
               href="/products/new"
-              className="px-6 py-3 bg-[#C4622D] text-white font-medium rounded-full hover:bg-[#3D2B1F] transition-all duration-300 shadow-md hover:shadow-lg"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#C4622D] text-white font-medium rounded-full hover:bg-[#3D2B1F] transition-all duration-300 shadow-md hover:shadow-lg"
             >
-              + List New Product
+              <span className="hidden md:block">Create New Product</span>{" "}
+              <Plus className="h-5 md:ml-4" />
             </Link>
+          </div>
+
+          {/* KPI Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="bg-[#FDFAF6] p-5 rounded-xl border border-[#7C9E87]/20 shadow-sm flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#3D2B1F]/60">
+                  Total Catalog Items
+                </p>
+                <p className="text-2xl font-bold text-[#3D2B1F] mt-1">
+                  {totalProducts}
+                </p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-[#7C9E87]/15 flex items-center justify-center text-[#7C9E87]">
+                📦
+              </div>
+            </div>
+
+            <div className="bg-[#FDFAF6] p-5 rounded-xl border border-[#7C9E87]/20 shadow-sm flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#3D2B1F]/60">
+                  Average Rating
+                </p>
+                <p className="text-2xl font-bold text-[#3D2B1F] mt-1">
+                  ⭐ {avgRating}
+                </p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-[#C4622D]/15 flex items-center justify-center text-[#C4622D]">
+                ✨
+              </div>
+            </div>
           </div>
 
           {/* Table Container */}
@@ -81,80 +137,87 @@ export default async function VendorProductsPage({
                       </td>
                     </tr>
                   ) : (
-                    products.map((product) => (
-                      <tr
-                        key={product.id}
-                        className="hover:bg-[#F5F0E8]/50 transition-colors"
-                      >
-                        <td className="py-4 px-4">
-                          <div className="flex items-center space-x-3">
-                            {product.image_url ? (
+                    products.map((product) => {
+                      const ratingVal = Number(product.rating_average);
+                      const displayRating =
+                        !isNaN(ratingVal) && ratingVal > 0
+                          ? ratingVal.toFixed(1)
+                          : "N/A";
+
+                      return (
+                        <tr
+                          key={product.id}
+                          className="hover:bg-[#F5F0E8]/50 transition-colors"
+                        >
+                          <td className="py-4 px-4">
+                            <div className="flex items-center space-x-3">
                               <img
                                 src={product.image_url}
                                 alt={product.image_alt || product.title}
+                                loading="lazy"
+                                decoding="async"
                                 className="w-12 h-12 rounded-lg object-cover border border-[#7C9E87]/30"
                               />
-                            ) : (
-                              <div className="w-12 h-12 rounded-lg bg-[#7C9E87]/20 flex items-center justify-center text-xs text-[#3D2B1F]">
-                                No img
+                              <div>
+                                <p className="font-semibold text-[#3D2B1F]">
+                                  <Link
+                                    href={`/product/${product.id}`}
+                                    className="hover:text-[#C4622D] hover:underline transition-colors"
+                                  >
+                                    {product.title}
+                                  </Link>
+                                </p>
+                                <p className="text-xs text-[#3D2B1F]/50 font-mono">
+                                  ID: {product.id}
+                                </p>
                               </div>
-                            )}
-                            <div>
-                              <p className="font-semibold text-[#3D2B1F]">
-                                {product.title}
-                              </p>
-                              <p className="text-xs text-[#3D2B1F]/50">
-                                ID: {product.id}
-                              </p>
                             </div>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4 text-[#3D2B1F]">
-                          {product.category_name ||
-                            `Category #${product.category_id}`}
-                        </td>
-                        <td className="py-4 px-4 font-medium text-[#3D2B1F]">
-                          ${Number(product.price).toFixed(2)}
-                        </td>
-                        <td className="py-4 px-4 text-[#3D2B1F]/80">
-                          ⭐{" "}
-                          {product.rating_average
-                            ? product.rating_average.toFixed(1)
-                            : "N/A"}{" "}
-                          <span className="text-xs opacity-60">
-                            ({product.reviews_count})
-                          </span>
-                        </td>
-                        <td className="py-4 px-4 text-right space-x-4">
-                          <Link
-                            href={`/products/${product.id}/edit`}
-                            className="font-medium text-[#7C9E87] hover:text-[#3D2B1F] transition-colors"
-                          >
-                            Edit
-                          </Link>
+                          </td>
+                          <td className="py-4 px-4 text-[#3D2B1F]">
+                            <span className="inline-block px-2.5 py-1 rounded-full bg-[#7C9E87]/15 text-xs font-medium text-[#3D2B1F]">
+                              {product.category_name ||
+                                `Category #${product.category_id}`}
+                            </span>
+                          </td>
+                          <td className="py-4 px-4 font-medium text-[#3D2B1F]">
+                            ${Number(product.price).toFixed(2)}
+                          </td>
+                          <td className="py-4 px-4 text-[#3D2B1F]/80">
+                            <span className="inline-flex items-center gap-1">
+                              ⭐ {displayRating}
+                              <span className="text-xs opacity-60">
+                                ({product.reviews_count || 0})
+                              </span>
+                            </span>
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <div className="flex items-center justify-end space-x-2">
+                              {/* Edit Link with Icon */}
+                              <Link
+                                href={`/products/${product.id}/edit`}
+                                title="Edit Product"
+                                className="p-2 text-[#7C9E87] hover:text-[#3D2B1F] hover:bg-[#7C9E87]/20 rounded-lg transition-colors border border-[#7C9E87]/30"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </Link>
 
-                          {/* Delete Form with Server Action */}
-                          <form action={handleDeleteProduct} className="inline">
-                            <input
-                              type="hidden"
-                              name="productId"
-                              value={product.id}
-                            />
-                            <button
-                              type="submit"
-                              className="font-medium text-[#C4622D] hover:text-[#3D2B1F] transition-colors bg-transparent border-0 cursor-pointer"
-                            >
-                              Delete
-                            </button>
-                          </form>
-                        </td>
-                      </tr>
-                    ))
+                              {/* Delete Form with Server Action + Confirmation */}
+                              <DeleteProductButton
+                                productId={product.id}
+                                productTitle={product.title}
+                                deleteAction={handleDeleteProduct}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
             </div>
           </div>
+          <Pagination totalPages={pagination.totalPages} />
         </div>
       </section>
 

@@ -23,7 +23,6 @@ export async function getProducts(params: ProductQueryParams) {
   try {
     const db = getDb();
 
-    // 1. Definimos las uniones base de las tablas principales
     let baseJoins = `
       FROM products p
       JOIN users u ON p.seller_id = u.id
@@ -59,18 +58,15 @@ export async function getProducts(params: ProductQueryParams) {
       whereClauses.push(`p.price <= $${queryParams.length}`);
     }
 
-    // Construimos la cláusula WHERE si existen filtros
     let whereClause = "";
     if (whereClauses.length > 0) {
       whereClause = " WHERE " + whereClauses.join(" AND ");
     }
 
-    // 2. Obtener el total de registros para la paginación (No necesita el LEFT JOIN de reviews)
     const countQuery = `SELECT COUNT(*)::int AS total ${baseJoins} ${whereClause}`;
     const countResult = await db.query(countQuery, queryParams);
     const total = countResult.rows[0]?.total || 0;
 
-    // 3. Cláusula de ordenamiento
     let orderClause = " ORDER BY p.created_at DESC";
     if (sort === "price-low") {
       orderClause = " ORDER BY p.price ASC";
@@ -80,13 +76,11 @@ export async function getProducts(params: ProductQueryParams) {
       orderClause = " ORDER BY p.created_at ASC";
     }
 
-    // 4. Parámetros de paginación (LIMIT & OFFSET)
     const offset = (page - 1) * limit;
     const dataQueryParams = [...queryParams, limit, offset];
     const limitParamIndex = queryParams.length + 1;
     const offsetParamIndex = queryParams.length + 2;
 
-    // 5. Consulta de datos corregida: Colocamos LEFT JOIN antes del WHERE
     const dataQuery = `
       SELECT p.id, p.title, p.description, p.price, p.image_url, p.image_alt, p.seller_id, p.category_id, p.created_at,
              u.name AS seller_name, 
@@ -179,12 +173,24 @@ export async function getProductById(
 
 export async function getProductsBySeller(
   sellerId: string,
-): Promise<ProductDetails[]> {
+  page: number = 1,
+  limit: number = 10,
+) {
   try {
-    // Direct query to Neon PostgreSQL filtering by seller_id
     const db = getDb();
-    const queryText = `
-     SELECT 
+
+    const countQuery = `
+      SELECT COUNT(*)::int AS total 
+      FROM products 
+      WHERE seller_id = $1
+    `;
+    const countResult = await db.query(countQuery, [sellerId]);
+    const total = countResult.rows[0]?.total || 0;
+
+    const offset = (page - 1) * limit;
+
+    const dataQuery = `
+      SELECT 
         p.id,
         p.title,
         p.description,
@@ -195,24 +201,39 @@ export async function getProductsBySeller(
         p.category_id,
         p.created_at,
         c.name AS category_name,
-         COUNT(r.id)::int AS reviews_count,
-             COALESCE(ROUND(AVG(r.rating), 2), 0)::float AS rating_average
+        COUNT(r.id)::int AS reviews_count,
+        COALESCE(ROUND(AVG(r.rating), 2), 0)::float AS rating_average
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
       LEFT JOIN reviews r ON p.id = r.product_id
       WHERE p.seller_id = $1
       GROUP BY p.id, c.name
-      ORDER BY p.created_at DESC;
+      ORDER BY p.created_at DESC
+      LIMIT $2 OFFSET $3;
     `;
 
-    const dataResult = await db.query(queryText, [sellerId]);
-    if (dataResult.rows.length === 0) {
-      return [];
-    }
-    return dataResult.rows as ProductDetails[];
-  } catch (error) {
+    const dataResult = await db.query(dataQuery, [sellerId, limit, offset]);
+
+    return {
+      data: dataResult.rows as ProductDetails[],
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit) || 1,
+      },
+    };
+  } catch (error: unknown) {
     console.error("Error fetching products by seller:", error);
-    return [];
+    return {
+      data: [],
+      pagination: {
+        total: 0,
+        page,
+        limit,
+        totalPages: 1,
+      },
+    };
   }
 }
 

@@ -1,6 +1,7 @@
 import Header from "@/app/ui/header";
 import Footer from "@/app/ui/footer";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
+import Pagination from "@/app/ui/pagination";
 import Link from "next/link";
 import { getProducts } from "@/app/services/products";
 import { getCategories } from "@/app/services/categories";
@@ -42,8 +43,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     }),
   ]);
 
-  // Construye la URL de navegación conservando los filtros aplicados
-  const getPageUrl = (newPage: number) => {
+  // Construye la URL de navegación conservando los filtros aplicados TODO BORRAR
+  /* const getPageUrl = (newPage: number) => {
     const params = new URLSearchParams();
     if (resolvedParams?.product) params.set("product", resolvedParams.product);
     if (resolvedParams?.category_id)
@@ -59,7 +60,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   };
 
   const hasPrevious = pagination.page > 1;
-  const hasNext = pagination.page < pagination.totalPages;
+  const hasNext = pagination.page < pagination.totalPages;*/
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF7F2]">
@@ -262,39 +263,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             })}
           </div>
         )}
-
-        <div className="flex items-center justify-center gap-4 mt-12 mb-8">
-          {hasPrevious ? (
-            <Link
-              href={getPageUrl(pagination.page - 1)}
-              className="px-4 py-2 rounded-lg border border-[#7C9E87] text-[#2C3E35] font-medium transition-all hover:bg-[#7C9E87] hover:text-white"
-            >
-              Previous
-            </Link>
-          ) : (
-            <span className="px-4 py-2 rounded-lg border border-gray-200 text-gray-400 font-medium cursor-not-allowed bg-gray-50">
-              Previous
-            </span>
-          )}
-
-          <span className="text-sm font-medium text-[#2C3E35]">
-            Page <strong className="text-[#7C9E87]">{pagination.page}</strong>{" "}
-            of <strong>{Math.max(pagination.totalPages, 1)}</strong>
-          </span>
-
-          {hasNext ? (
-            <Link
-              href={getPageUrl(pagination.page + 1)}
-              className="px-4 py-2 rounded-lg border border-[#7C9E87] text-[#2C3E35] font-medium transition-all hover:bg-[#7C9E87] hover:text-white"
-            >
-              Next
-            </Link>
-          ) : (
-            <span className="px-4 py-2 rounded-lg border border-gray-200 text-gray-400 font-medium cursor-not-allowed bg-gray-50">
-              Next
-            </span>
-          )}
-        </div>
+        <Pagination totalPages={pagination.totalPages} />
       </main>
 
       <Footer />
