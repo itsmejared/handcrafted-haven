@@ -1,6 +1,46 @@
 import { z } from "zod";
 
-// Schema for GET /api/products query parameters
+// Base Product Schema matching PostgreSQL table
+export const productSchema = z.object({
+  id: z.string().uuid("Invalid product ID format"),
+  title: z
+    .string()
+    .trim()
+    .min(3, "Title must be at least 3 characters")
+    .max(255, "Title cannot exceed 255 characters"),
+  description: z
+    .string()
+    .trim()
+    .min(10, "Description must be at least 10 characters"),
+  price: z.coerce.number().positive("Price must be a positive number"),
+  image_url: z.string().trim().url("Invalid image URL format"),
+  image_alt: z.string().trim().min(1, "Image alt text is required"),
+  seller_id: z.string().uuid("Invalid seller ID format"),
+  category_id: z.coerce
+    .number()
+    .int()
+    .positive("Category ID must be a positive integer"),
+  created_at: z.string().optional(),
+});
+
+// Schema for POST (Creating a new product)
+export const createProductSchema = productSchema.omit({
+  id: true,
+  seller_id: true,
+  created_at: true,
+});
+
+// Schema for PUT (Updating an existing product)
+export const updateProductSchema = createProductSchema.partial().extend({
+  id: z.string().uuid("Invalid product ID format"),
+});
+
+// Schema for DELETE / GET single product by ID
+export const productIdSchema = z.object({
+  id: z.string().uuid("Invalid product ID format"),
+});
+
+// Schema for GET /products query parameters
 export const productQuerySchema = z
   .object({
     category_id: z.coerce.number().int().positive().optional(),
@@ -32,4 +72,7 @@ export const productQuerySchema = z
     },
   );
 
+// TypeScript Types inferred from Zod Schemas
+export type CreateProductInput = z.infer<typeof createProductSchema>;
+export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 export type ProductQueryParams = z.infer<typeof productQuerySchema>;

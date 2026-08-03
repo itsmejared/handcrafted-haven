@@ -1,5 +1,5 @@
-import { FaFacebook, FaXTwitter, FaInstagram } from 'react-icons/fa6';
-import { Star } from 'lucide-react';
+import { FaFacebook, FaXTwitter, FaInstagram } from "react-icons/fa6";
+import { Star } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -8,18 +8,33 @@ export default function Footer() {
       <footer className="px-8 py-12 bg-[#3D2B1F] text-[#F5F0E8]">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between gap-8">
           <div>
-            <h3 className="text-xl font-bold text-[#C4622D] mb-4">🧶 Handcrafted Haven</h3>
+            <h3 className="text-xl font-bold text-[#C4622D] mb-4">
+              🧶 Handcrafted Haven
+            </h3>
             <p className="opacity-75 max-w-xs mb-4">
-              Connecting artisans with people who appreciate the beauty of handmade products.
+              Connecting artisans with people who appreciate the beauty of
+              handmade products.
             </p>
             <div className="flex gap-4">
-              <a href="#" aria-label="Facebook" className="hover:text-[#C4622D] transition-colors">
+              <a
+                href="#"
+                aria-label="Facebook"
+                className="hover:text-[#C4622D] transition-colors"
+              >
                 <FaFacebook className="w-5 h-5" />
               </a>
-              <a href="#" aria-label="Twitter" className="hover:text-[#C4622D] transition-colors">
+              <a
+                href="#"
+                aria-label="Twitter"
+                className="hover:text-[#C4622D] transition-colors"
+              >
                 <FaXTwitter className="w-5 h-5" />
               </a>
-              <a href="#" aria-label="Instagram" className="hover:text-[#C4622D] transition-colors">
+              <a
+                href="#"
+                aria-label="Instagram"
+                className="hover:text-[#C4622D] transition-colors"
+              >
                 <FaInstagram className="w-5 h-5" />
               </a>
             </div>
@@ -27,12 +42,28 @@ export default function Footer() {
           <div>
             <h4 className="font-bold mb-4 text-[#7C9E87]">Quick Links</h4>
             <ul className="space-y-2 opacity-75">
-              <li><a href="/shop" className="hover:text-[#C4622D] transition-colors">Shop</a></li>
-              <li><a href="/sellers" className="hover:text-[#C4622D] transition-colors">Become a Seller</a></li>
-              <li><a href="/about" className="hover:text-[#C4622D] transition-colors">About Us</a></li>
               <li>
-                <a href="/reviews" className="hover:text-[#C4622D] transition-colors flex items-center gap-1.5">
-                  <Star className="w-4 h-4" /> Reviews
+                <a
+                  href="/shop"
+                  className="hover:text-[#C4622D] transition-colors"
+                >
+                  Shop
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/sellers"
+                  className="hover:text-[#C4622D] transition-colors"
+                >
+                  Become a Seller
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/about"
+                  className="hover:text-[#C4622D] transition-colors"
+                >
+                  About Us
                 </a>
               </li>
             </ul>

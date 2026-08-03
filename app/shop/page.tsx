@@ -20,7 +20,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const resolvedParams = await searchParams;
 
   const page = Number(resolvedParams?.page) || 1;
-  const limit = 12;
+  const limit = 6;
 
   // Ejecutamos ambas consultas en paralelo para acelerar la respuesta del servidor
   const [categories, { data: products, pagination }] = await Promise.all([
@@ -66,7 +66,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
-        {/* Encabezado */}
         <div className="mb-8 border-b border-[#E5DEC9] pb-4">
           <h1 className="text-3xl font-bold text-[#2C3E35]">
             Shop All Products
@@ -77,13 +76,11 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           </p>
         </div>
 
-        {/* 🔍 BARRA DE FILTROS */}
         <form
           action="/shop"
           method="GET"
           className="bg-[#F5F0E8] p-6 rounded-2xl shadow-sm border border-[#E5DEC9] mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end"
         >
-          {/* Búsqueda por texto */}
           <div>
             <label
               htmlFor="product"
@@ -101,7 +98,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             />
           </div>
 
-          {/* Categoría Dinámica */}
           <div>
             <label
               htmlFor="category_id"
@@ -124,7 +120,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             </select>
           </div>
 
-          {/* Rango de Precios */}
           <div className="flex gap-2">
             <div className="w-1/2">
               <label
@@ -164,7 +159,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             </div>
           </div>
 
-          {/* Ordenar por */}
           <div>
             <label
               htmlFor="sort"
@@ -185,7 +179,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             </select>
           </div>
 
-          {/* Botones de Filtro */}
           <div className="flex gap-2">
             <button
               type="submit"
@@ -202,7 +195,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           </div>
         </form>
 
-        {/* 📦 LISTA DE PRODUCTOS */}
         {products.length === 0 ? (
           <div className="text-center py-16 bg-[#F5F0E8] rounded-2xl border border-dashed border-[#7C9E87]">
             <p className="text-lg font-medium text-[#2C3E35]">
@@ -217,9 +209,10 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                 "★".repeat(roundedRating) + "☆".repeat(5 - roundedRating);
 
               return (
-                <div
+                <Link
                   key={product.id}
-                  className="bg-[#F5F0E8] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                  href={`/product/${product.id}`}
+                  className="group bg-[#F5F0E8] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
                 >
                   <div>
                     <div className="w-full h-48 overflow-hidden bg-gray-200">
@@ -264,13 +257,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                       seller={product.seller_name}
                     />
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
         )}
 
-        {/* 📄 PAGINADOR SIEMPRE VISIBLE */}
         <div className="flex items-center justify-center gap-4 mt-12 mb-8">
           {hasPrevious ? (
             <Link

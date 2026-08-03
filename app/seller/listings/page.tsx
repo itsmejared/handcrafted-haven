@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Header from '@/app/ui/header';
-import Footer from '@/app/ui/footer';
-import { useAuth } from '@/app/lib/auth-context';
-import { useToast } from '@/app/context/toast-context';
-import { ProductWithDetails } from '@/app/lib/types';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Header from "@/app/ui/header";
+import Footer from "@/app/ui/footer";
+import { useAuth } from "@/app/lib/auth-context";
+import { useToast } from "@/app/context/toast-context";
+import { ProductDetails } from "@/app/lib/types";
 
 export default function MyListingsPage() {
   const router = useRouter();
   const { user } = useAuth();
   const { showToast } = useToast();
 
-  const [listings, setListings] = useState<ProductWithDetails[]>([]);
+  const [listings, setListings] = useState<ProductDetails[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState('');
+  const [loadError, setLoadError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
 
-    if (user.role !== 'seller') {
-      router.push('/');
+    if (user.role !== "seller") {
+      router.push("/");
       return;
     }
 
@@ -31,17 +31,19 @@ export default function MyListingsPage() {
 
     async function loadListings() {
       setLoading(true);
-      setLoadError('');
+      setLoadError("");
       try {
         const res = await fetch(`/api/products?seller_id=${currentUser.id}`);
         if (!res.ok) {
-          throw new Error('Failed to load your listings.');
+          throw new Error("Failed to load your listings.");
         }
-        const data: ProductWithDetails[] = await res.json();
+        const data: ProductDetails[] = await res.json();
         setListings(data);
       } catch (err) {
-        console.error('Error loading listings:', err);
-        setLoadError('Something went wrong while loading your listings. Please try again.');
+        console.error("Error loading listings:", err);
+        setLoadError(
+          "Something went wrong while loading your listings. Please try again.",
+        );
       } finally {
         setLoading(false);
       }
@@ -55,23 +57,26 @@ export default function MyListingsPage() {
 
     try {
       const res = await fetch(`/api/products/${productId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        showToast(data.error || 'Failed to remove this listing.', 'error');
+        showToast(data.error || "Failed to remove this listing.", "error");
         setDeletingId(null);
         setConfirmingId(null);
         return;
       }
 
       setListings((prev) => prev.filter((p) => p.id !== productId));
-      showToast('Listing removed.', 'success');
+      showToast("Listing removed.", "success");
     } catch (err) {
-      console.error('Error deleting product:', err);
-      showToast('Something went wrong while removing this listing. Please try again.', 'error');
+      console.error("Error deleting product:", err);
+      showToast(
+        "Something went wrong while removing this listing. Please try again.",
+        "error",
+      );
     } finally {
       setDeletingId(null);
       setConfirmingId(null);
@@ -136,8 +141,12 @@ export default function MyListingsPage() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h2 className="font-bold text-[#3D2B1F] truncate">{product.title}</h2>
-                    <p className="text-sm text-[#7C9E87]">{product.category_name}</p>
+                    <h2 className="font-bold text-[#3D2B1F] truncate">
+                      {product.title}
+                    </h2>
+                    <p className="text-sm text-[#7C9E87]">
+                      {product.category_name}
+                    </p>
                     <p className="text-[#C4622D] font-semibold">
                       ${Number(product.price).toFixed(2)}
                     </p>
@@ -145,13 +154,17 @@ export default function MyListingsPage() {
 
                   {confirmingId === product.id ? (
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-sm text-[#3D2B1F]">Remove this listing?</span>
+                      <span className="text-sm text-[#3D2B1F]">
+                        Remove this listing?
+                      </span>
                       <button
                         onClick={() => handleDelete(product.id)}
                         disabled={deletingId === product.id}
                         className="px-3 py-1.5 bg-red-500 text-white text-sm rounded-full hover:bg-red-600 transition-colors disabled:opacity-50"
                       >
-                        {deletingId === product.id ? 'Removing...' : 'Yes, remove'}
+                        {deletingId === product.id
+                          ? "Removing..."
+                          : "Yes, remove"}
                       </button>
                       <button
                         onClick={() => setConfirmingId(null)}
