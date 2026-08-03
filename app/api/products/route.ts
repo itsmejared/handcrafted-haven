@@ -24,13 +24,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Required because of the json_agg aggregate above — every non-aggregated
-    // selected column must appear here.
-    queryText += `
-      GROUP BY p.id, p.title, p.description, p.price, p.image_url, p.image_alt,
-               p.seller_id, p.category_id, p.created_at, u.name, c.name
-    `;
-
     // Execute paginated SQL query with validated data
     const result = await getProducts(validatedParams.data);
 
@@ -44,11 +37,8 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST: Add a new product with one or more images (artisan only)
+// POST: Add a new product (artisan only)
 export async function POST(request: Request) {
-  const db = getDb();
-  const client = await db.connect();
-
   try {
     const user = await getAuthenticatedUser();
 
@@ -75,23 +65,6 @@ export async function POST(request: Request) {
       body.imageAlt || body.image_alt || title || "Product Image";
     const categoryId = body.categoryId || body.category_id;
 
-    // Accept either the new multi-image shape (images: [{ imageUrl, imageAlt }])
-    // or the old single-image shape (imageUrl / imageAlt) for backward compatibility.
-    let images: { imageUrl: string; imageAlt?: string }[] = Array.isArray(
-      body.images,
-    )
-      ? body.images
-      : [];
-
-    if (images.length === 0 && (body.imageUrl || body.image_url)) {
-      images = [
-        {
-          imageUrl: body.imageUrl || body.image_url,
-          imageAlt: body.imageAlt || body.image_alt,
-        },
-      ];
-    }
-
     // Validation
     if (
       !title ||
@@ -109,15 +82,6 @@ export async function POST(request: Request) {
       );
     }
 
-    for (const img of images) {
-      if (!img.imageUrl || !img.imageUrl.trim()) {
-        return NextResponse.json(
-          { error: "Every image entry must include a non-empty imageUrl." },
-          { status: 400 },
-        );
-      }
-    }
-
     const parsedPrice = parseFloat(price);
     if (isNaN(parsedPrice) || parsedPrice <= 0) {
       return NextResponse.json(
@@ -126,15 +90,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const parsedCategoryId = parseInt(categoryId, 10);
-    if (isNaN(parsedCategoryId)) {
-      return NextResponse.json(
-        { error: "categoryId must be a valid number." },
-        { status: 400 },
-      );
-    }
-
-    await client.query("BEGIN");
+    const db = getDb();
 
     // Verify category exists
     const categoryCheck = await db.query(
@@ -142,19 +98,14 @@ export async function POST(request: Request) {
       [parseInt(categoryId, 10)],
     );
     if (categoryCheck.rows.length === 0) {
-      await client.query("ROLLBACK");
       return NextResponse.json(
         { error: "Invalid categoryId. Category does not exist." },
         { status: 400 },
       );
     }
 
-    const primaryImage = images[0];
-    const primaryImageAlt = (primaryImage.imageAlt || title).trim();
-
-    // Insert the product itself. image_url / image_alt store the primary
-    // image for quick access on cards/search without joining product_images.
-    const result = await client.query(
+    // Insert new product
+    const result = await db.query(
       `INSERT INTO products (title, description, price, image_url, image_alt, seller_id, category_id)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, title, description, price, image_url AS "imageUrl", image_alt AS "imageAlt", seller_id AS "sellerId", category_id AS "categoryId", created_at`,
@@ -162,8 +113,8 @@ export async function POST(request: Request) {
         title.trim(),
         description.trim(),
         parsedPrice,
-        primaryImage.imageUrl.trim(),
-        primaryImageAlt,
+        imageUrl.trim(),
+        imageAlt.trim(),
         user.id,
         parseInt(categoryId, 10),
       ],
@@ -171,13 +122,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (error: any) {
-    await client.query("ROLLBACK");
     console.error("API Error while adding product:", error);
     return NextResponse.json(
       { error: "Internal Server Error while adding product." },
       { status: 500 },
     );
-  } finally {
-    client.release();
   }
 }
