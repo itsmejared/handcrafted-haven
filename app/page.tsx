@@ -1,7 +1,4 @@
 import Link from "next/link";
-import Header from "@/app/ui/header";
-import Footer from "@/app/ui/footer";
-import { getDb } from "@/app/lib/db";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
 import { getCategories } from "@/app/services/categories";
 import { getProducts } from "./services/products";
@@ -25,8 +22,6 @@ export default async function Home() {
 
   return (
     <main>
-      <Header />
-
       {/* Hero Section */}
       <section className="bg-[#F5F0E8] px-6 md:px-12 py-12 md:py-16">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -189,8 +184,6 @@ export default async function Home() {
           ))}
         </div>
       </section>
-
-      <Footer />
 
       <style>{`
         @keyframes float {

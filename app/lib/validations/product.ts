@@ -1,8 +1,28 @@
 import { z } from "zod";
 
+// Regex helper to support both HTTP URLs and Base64 Data URIs
+const imageUrlOrBase64 = z
+  .string()
+  .trim()
+  .refine(
+    (val) => {
+      const isUrl = /^https?:\/\/.+/i.test(val);
+      const isBase64 =
+        /^data:image\/(png|jpeg|jpg|webp|gif|svg\+xml);base64,/.test(val);
+      const isRelativePath = /^\/[^\s]+\.(png|jpeg|jpg|webp|gif|svg)$/i.test(
+        val,
+      );
+      return isUrl || isBase64 || isRelativePath;
+    },
+    {
+      message:
+        "Image must be a valid URL, relative path (/product/...), or a Base64 data string",
+    },
+  );
+
 // Base Product Schema matching PostgreSQL table
 export const productSchema = z.object({
-  id: z.string().uuid("Invalid product ID format"),
+  id: z.uuid("Invalid product ID format"),
   title: z
     .string()
     .trim()
@@ -13,13 +33,11 @@ export const productSchema = z.object({
     .trim()
     .min(10, "Description must be at least 10 characters"),
   price: z.coerce.number().positive("Price must be a positive number"),
-  image_url: z.string().trim().url("Invalid image URL format"),
-  image_alt: z.string().trim().min(1, "Image alt text is required"),
-  seller_id: z.string().uuid("Invalid seller ID format"),
-  category_id: z.coerce
-    .number()
-    .int()
-    .positive("Category ID must be a positive integer"),
+  image_url: imageUrlOrBase64,
+  // Hacemos image_alt opcional en el schema de entrada para permitir que el server ponga el title por defecto
+  image_alt: z.string().trim().optional(),
+  seller_id: z.uuid("Invalid seller selected."),
+  category_id: z.coerce.number().int().positive("Invalid category selected."),
   created_at: z.string().optional(),
 });
 
@@ -31,13 +49,11 @@ export const createProductSchema = productSchema.omit({
 });
 
 // Schema for PUT (Updating an existing product)
-export const updateProductSchema = createProductSchema.partial().extend({
-  id: z.string().uuid("Invalid product ID format"),
-});
+export const updateProductSchema = createProductSchema.partial();
 
 // Schema for DELETE / GET single product by ID
 export const productIdSchema = z.object({
-  id: z.string().uuid("Invalid product ID format"),
+  id: z.uuid("Invalid product ID format"),
 });
 
 // Schema for GET /products query parameters

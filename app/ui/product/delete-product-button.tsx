@@ -1,33 +1,30 @@
 "use client";
 
+import { ServiceResponse } from "@/app/lib/types";
 import { Trash2 } from "lucide-react";
 
 interface DeleteProductButtonProps {
-  productId: string;
   productTitle: string;
-  deleteAction: (formData: FormData) => Promise<void>;
+  deleteAction: () => Promise<ServiceResponse<boolean> | unknown>;
 }
 
 export default function DeleteProductButton({
-  productId,
   productTitle,
   deleteAction,
 }: DeleteProductButtonProps) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      confirm(
+        `Are you sure you want to delete "${productTitle}"? This action cannot be undone.`,
+      )
+    ) {
+      await deleteAction();
+    }
+  };
+
   return (
-    <form
-      action={deleteAction}
-      onSubmit={(e) => {
-        if (
-          !confirm(
-            `Are you sure you want to delete "${productTitle}"? This action cannot be undone.`,
-          )
-        ) {
-          e.preventDefault();
-        }
-      }}
-      className="inline"
-    >
-      <input type="hidden" name="productId" value={productId} />
+    <form onSubmit={handleSubmit} className="inline">
       <button
         type="submit"
         title="Delete Product"

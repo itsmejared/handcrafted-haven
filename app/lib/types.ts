@@ -50,3 +50,10 @@ export interface Review {
   created_at: string;
   reviewer_name: string;
 }
+
+export interface ServiceResponse<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  statusCode: number;
+}

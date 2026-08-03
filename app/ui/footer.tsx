@@ -1,5 +1,4 @@
 import { FaFacebook, FaXTwitter, FaInstagram } from "react-icons/fa6";
-import { Star } from "lucide-react";
 
 export default function Footer() {
   return (

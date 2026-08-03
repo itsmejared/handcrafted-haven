@@ -1,66 +1,73 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Header from '@/app/ui/header';
-import Footer from '@/app/ui/footer';
+import { useState } from "react";
 
 export default function SellerSignupPage() {
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    craft: '',
-    portfolio: '',
-    message: '',
+    name: "",
+    email: "",
+    craft: "",
+    portfolio: "",
+    message: "",
   });
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     // Will connect to the backend signup endpoint once available
-    console.log('Seller application:', formData);
+    console.log("Seller application:", formData);
     setSubmitted(true);
   }
 
   if (submitted) {
     return (
       <main>
-        <Header />
         <section className="px-6 md:px-12 py-24 bg-[#F5F0E8] min-h-[50vh] text-center">
           <div className="max-w-xl mx-auto">
             <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">
-              Thank You, {formData.name.split(' ')[0] || 'Friend'}!
+              Thank You, {formData.name.split(" ")[0] || "Friend"}!
             </h1>
             <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-6"></div>
             <p className="text-[#3D2B1F] opacity-75 text-lg">
-              Your application has been received. We'll be in touch at {formData.email} soon.
+              Your application has been received. We&apos;ll be in touch at{" "}
+              {formData.email} soon.
             </p>
           </div>
         </section>
-        <Footer />
       </main>
     );
   }
 
   return (
     <main>
-      <Header />
       <section className="px-6 md:px-12 py-16 md:py-20 bg-[#F5F0E8]">
         <div className="max-w-xl mx-auto">
           <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">Apply to Sell</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">
+              Apply to Sell
+            </h1>
             <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-6"></div>
             <p className="text-[#3D2B1F] opacity-75 text-lg">
-              Tell us a bit about your craft, and we'll follow up with next steps.
+              Tell us a bit about your craft, and we&apos;ll follow up with next
+              steps.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="bg-[#FDFAF6] rounded-2xl p-6 md:p-8 shadow-md space-y-5">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-[#FDFAF6] rounded-2xl p-6 md:p-8 shadow-md space-y-5"
+          >
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-[#3D2B1F] mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-[#3D2B1F] mb-2"
+              >
                 Full Name
               </label>
               <input
@@ -75,7 +82,10 @@ export default function SellerSignupPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[#3D2B1F] mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-[#3D2B1F] mb-2"
+              >
                 Email Address
               </label>
               <input
@@ -90,7 +100,10 @@ export default function SellerSignupPage() {
             </div>
 
             <div>
-              <label htmlFor="craft" className="block text-sm font-medium text-[#3D2B1F] mb-2">
+              <label
+                htmlFor="craft"
+                className="block text-sm font-medium text-[#3D2B1F] mb-2"
+              >
                 What do you make?
               </label>
               <input
@@ -106,8 +119,12 @@ export default function SellerSignupPage() {
             </div>
 
             <div>
-              <label htmlFor="portfolio" className="block text-sm font-medium text-[#3D2B1F] mb-2">
-                Portfolio or Social Link <span className="opacity-50">(optional)</span>
+              <label
+                htmlFor="portfolio"
+                className="block text-sm font-medium text-[#3D2B1F] mb-2"
+              >
+                Portfolio or Social Link{" "}
+                <span className="opacity-50">(optional)</span>
               </label>
               <input
                 id="portfolio"
@@ -121,8 +138,12 @@ export default function SellerSignupPage() {
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-[#3D2B1F] mb-2">
-                Tell us about your work <span className="opacity-50">(optional)</span>
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-[#3D2B1F] mb-2"
+              >
+                Tell us about your work{" "}
+                <span className="opacity-50">(optional)</span>
               </label>
               <textarea
                 id="message"
@@ -143,7 +164,6 @@ export default function SellerSignupPage() {
           </form>
         </div>
       </section>
-      <Footer />
     </main>
   );
 }

@@ -1,10 +1,8 @@
 import { getProductById } from "@/app/services/products";
-import Header from "@/app/ui/header";
-import Footer from "@/app/ui/footer";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
 import { notFound } from "next/navigation";
 import { getReviewsByProductId } from "@/app/services/reviews";
-import ProductReviewsCarousel from "@/app/ui/product-reviews-carousel";
+import ProductReviewsCarousel from "@/app/ui/product/product-reviews-carousel";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -27,7 +25,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   return (
     <main>
-      <Header />
       <section className="px-6 md:px-12 py-16 md:py-24 bg-[#F5F0E8] min-h-[70vh]">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
           <div>
@@ -107,7 +104,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
           </div>
         </div>
       </section>
-      <Footer />
     </main>
   );
 }

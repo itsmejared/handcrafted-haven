@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/app/ui/header";
+import Footer from "@/app/ui/footer";
 import { CartProvider } from "@/app/lib/cart-context";
 import { AuthProvider } from "@/app/lib/auth-context";
 import { ToastProvider } from "@/app/context/toast-context";
@@ -31,7 +33,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ToastProvider>
           <AuthProvider>
-            <CartProvider>{children}</CartProvider>
+            <CartProvider>
+              <Header />
+              {children}
+              <Footer />
+            </CartProvider>
           </AuthProvider>
         </ToastProvider>
       </body>

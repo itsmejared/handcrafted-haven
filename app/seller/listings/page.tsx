@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Header from "@/app/ui/header";
-import Footer from "@/app/ui/footer";
 import { useAuth } from "@/app/lib/auth-context";
 import { useToast } from "@/app/context/toast-context";
 import { ProductDetails } from "@/app/lib/types";
@@ -86,20 +84,17 @@ export default function MyListingsPage() {
   if (!user) {
     return (
       <main>
-        <Header />
         <section className="px-6 md:px-12 py-16 bg-[#F5F0E8] min-h-[60vh]">
           <p className="text-center text-[#3D2B1F] opacity-75 text-lg">
             Please log in to view your listings.
           </p>
         </section>
-        <Footer />
       </main>
     );
   }
 
   return (
     <main>
-      <Header />
       <section className="px-6 md:px-12 py-16 bg-[#F5F0E8] min-h-[60vh]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
@@ -188,7 +183,6 @@ export default function MyListingsPage() {
           )}
         </div>
       </section>
-      <Footer />
     </main>
   );
 }

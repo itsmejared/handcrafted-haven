@@ -1,11 +1,8 @@
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
-import Header from "@/app/ui/header";
-import Footer from "@/app/ui/footer";
-import DeleteProductButton from "../ui/delete-product-button";
+import DeleteProductButton from "../ui/product/delete-product-button";
 import Pagination from "@/app/ui/pagination";
 import { Plus, Pencil } from "lucide-react";
-import { ProductDetails } from "@/app/lib/types";
 import { getProductsBySeller, deleteProduct } from "@/app/services/products";
 
 interface ProductsPageProps {
@@ -48,15 +45,13 @@ export default async function VendorProductsPage({
     const productId = formData.get("productId") as string;
 
     if (productId) {
-      await deleteProduct(productId);
-      revalidatePath("/products");
+      await deleteProduct(productId, "");
+      revalidatePath("/product");
     }
   }
 
   return (
     <main className="min-h-screen flex flex-col bg-[#F5F0E8]">
-      <Header />
-
       <section className="flex-grow px-6 md:px-12 py-12">
         <div className="max-w-6xl mx-auto">
           {/* Header & Quick Action */}
@@ -73,7 +68,7 @@ export default async function VendorProductsPage({
             </div>
 
             <Link
-              href="/products/new"
+              href="/product/new"
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#C4622D] text-white font-medium rounded-full hover:bg-[#3D2B1F] transition-all duration-300 shadow-md hover:shadow-lg"
             >
               <span className="hidden md:block">Create New Product</span>{" "}
@@ -143,6 +138,11 @@ export default async function VendorProductsPage({
                         !isNaN(ratingVal) && ratingVal > 0
                           ? ratingVal.toFixed(1)
                           : "N/A";
+                      const deleteProductWithArgs = deleteProduct.bind(
+                        null,
+                        product.id,
+                        mockSellerId,
+                      );
 
                       return (
                         <tr
@@ -194,18 +194,17 @@ export default async function VendorProductsPage({
                             <div className="flex items-center justify-end space-x-2">
                               {/* Edit Link with Icon */}
                               <Link
-                                href={`/products/${product.id}/edit`}
+                                href={`/product/${product.id}/edit`}
                                 title="Edit Product"
                                 className="p-2 text-[#7C9E87] hover:text-[#3D2B1F] hover:bg-[#7C9E87]/20 rounded-lg transition-colors border border-[#7C9E87]/30"
                               >
                                 <Pencil className="w-4 h-4" />
                               </Link>
-
                               {/* Delete Form with Server Action + Confirmation */}
+
                               <DeleteProductButton
-                                productId={product.id}
                                 productTitle={product.title}
-                                deleteAction={handleDeleteProduct}
+                                deleteAction={deleteProductWithArgs}
                               />
                             </div>
                           </td>
@@ -220,8 +219,6 @@ export default async function VendorProductsPage({
           <Pagination totalPages={pagination.totalPages} />
         </div>
       </section>
-
-      <Footer />
     </main>
   );
 }

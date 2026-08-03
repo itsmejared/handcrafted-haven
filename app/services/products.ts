@@ -1,7 +1,7 @@
 "use server";
 
 import { getDb } from "@/app/lib/db";
-import { ProductDetails } from "@/app/lib/types";
+import { Product, ProductDetails, ServiceResponse } from "@/app/lib/types";
 import { ProductQueryParams } from "@/app/lib/validations/product";
 import { revalidatePath } from "next/cache";
 import {
@@ -10,12 +10,6 @@ import {
   productIdSchema,
 } from "@/app/lib/validations/product";
 
-const user = { id: "41e9c845-1238-4272-9749-98b160268f91" };
-
-/**
- * Server Action to retrieve filtered and paginated products.
- * Can be called directly from Server Components or Client Components.
- */
 export async function getProducts(params: ProductQueryParams) {
   const { category_id, product, min_price, max_price, sort, page, limit } =
     params;
@@ -135,7 +129,7 @@ export async function getProductById(
         p.description, 
         p.price,
         p.image_url, 
-        p.image_alt AS "imageAlt",
+        p.image_alt,
         p.seller_id, 
         p.category_id, 
         p.created_at,
@@ -237,41 +231,22 @@ export async function getProductsBySeller(
   }
 }
 
-export interface ServiceResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  statusCode: number;
-}
-
 /**
  * Creates a new product using Zod validation.
  */
-export async function createProduct(input: unknown): Promise<ServiceResponse> {
+export async function createProduct(
+  sellerId: string,
+  rawData: unknown,
+): Promise<ServiceResponse<Product>> {
   try {
-    /*const user = await getAuthenticatedUser();
-
-    if (!user) {
-      return {
-        success: false,
-        error: "Unauthorized. Please log in.",
-        statusCode: 401,
-      };
-    }
-
-    if (user.role !== "seller") {
-      return {
-        success: false,
-        error: "Forbidden. Only sellers can list products.",
-        statusCode: 403,
-      };
-    }*/
-
-    // 1. Zod Validation
-    const validation = createProductSchema.safeParse(input);
+    // Validate payload with Zod
+    const validation = createProductSchema.safeParse(rawData);
     if (!validation.success) {
-      const errorMessage = validation.error.issues[0].message;
-      return { success: false, error: errorMessage, statusCode: 400 };
+      return {
+        success: false,
+        statusCode: 400,
+        error: validation.error.issues[0]?.message || "Invalid input data",
+      };
     }
 
     const { title, description, price, image_url, image_alt, category_id } =
@@ -279,42 +254,57 @@ export async function createProduct(input: unknown): Promise<ServiceResponse> {
 
     const db = getDb();
 
-    // 2. Verify category exists
-    const categoryCheck = await db.query(
-      "SELECT id FROM categories WHERE id = $1",
-      [category_id],
-    );
-
-    if (categoryCheck.rows.length === 0) {
+    // Verify category exists
+    const catCheck = await db.query("SELECT id FROM categories WHERE id = $1", [
+      category_id,
+    ]);
+    if (catCheck.rows.length === 0) {
       return {
         success: false,
-        error: "Invalid category_id. Category does not exist.",
         statusCode: 400,
+        error: "Selected category does not exist.",
       };
     }
 
-    // 3. Insert product
-    const result = await db.query(
-      `INSERT INTO products (title, description, price, image_url, image_alt, seller_id, category_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id, title, description, price, image_url, image_alt, seller_id, category_id, created_at`,
-      [title, description, price, image_url, image_alt, user.id, category_id],
-    );
+    const query = `
+      INSERT INTO products (title, description, price, image_url, image_alt, seller_id, category_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *;
+    `;
 
+    // Fallback limpio para image_alt en caso de no venir en el payload
+    const finalAlt =
+      image_alt && image_alt.trim().length > 0
+        ? image_alt.trim()
+        : title.trim();
+
+    const values = [
+      title.trim(),
+      description.trim(),
+      price,
+      image_url,
+      finalAlt,
+      sellerId,
+      category_id,
+    ];
+
+    const result = await db.query(query, values);
+
+    // Revalidar los cachés de Next.js para actualizar la vista de la tienda y el listado de productos
+    revalidatePath("/product");
     revalidatePath("/shop");
-    revalidatePath("/products");
 
     return {
       success: true,
-      data: result.rows[0],
       statusCode: 201,
+      data: result.rows[0] as Product,
     };
-  } catch (error: unknown) {
-    console.error("Service Error while adding product:", error);
+  } catch (error: any) {
+    console.error("Error in createProduct:", error);
     return {
       success: false,
-      error: "Internal Server Error while adding product.",
       statusCode: 500,
+      error: "Internal Server Error while creating product.",
     };
   }
 }
@@ -322,76 +312,104 @@ export async function createProduct(input: unknown): Promise<ServiceResponse> {
 /**
  * Updates an existing product using Zod validation.
  */
-export async function updateProduct(input: unknown): Promise<ServiceResponse> {
+export async function updateProduct(
+  productId: string,
+  sellerId: string,
+  rawData: unknown,
+): Promise<ServiceResponse<Product>> {
   try {
-    /*const user = await getAuthenticatedUser();
-
-    if (!user) {
+    // Validate payload with Zod
+    const validation = updateProductSchema.safeParse(rawData);
+    if (!validation.success) {
       return {
         success: false,
-        error: "Unauthorized. Please log in.",
-        statusCode: 401,
+        statusCode: 400,
+        error: validation.error.issues[0]?.message || "Invalid input data",
       };
-    }*/
-
-    // 1. Zod Validation
-    const validation = updateProductSchema.safeParse(input);
-    if (!validation.success) {
-      const errorMessage = validation.error.issues[0].message;
-      return { success: false, error: errorMessage, statusCode: 400 };
     }
-
-    const { id, title, description, price, image_url, image_alt, category_id } =
-      validation.data;
 
     const db = getDb();
 
-    // 2. Verify ownership
-    const productCheck = await db.query(
+    // Check ownership
+    const ownerCheck = await db.query(
       "SELECT seller_id FROM products WHERE id = $1",
-      [id],
+      [productId],
     );
 
-    if (productCheck.rows.length === 0) {
-      return { success: false, error: "Product not found.", statusCode: 404 };
-    }
-
-    if (productCheck.rows[0].seller_id !== user.id) {
+    if (ownerCheck.rows.length === 0) {
       return {
         success: false,
-        error: "Forbidden. You do not own this product.",
-        statusCode: 403,
+        statusCode: 404,
+        error: "Product not found.",
       };
     }
 
-    // 3. Update query dynamically or with COALESCE
-    const updateResult = await db.query(
-      `UPDATE products
-       SET title = COALESCE($1, title),
-           description = COALESCE($2, description),
-           price = COALESCE($3, price),
-           image_url = COALESCE($4, image_url),
-           image_alt = COALESCE($5, image_alt),
-           category_id = COALESCE($6, category_id)
-       WHERE id = $7
-       RETURNING id, title, description, price, image_url, image_alt, seller_id, category_id, created_at`,
-      [title, description, price, image_url, image_alt, category_id, id],
-    );
+    if (ownerCheck.rows[0].seller_id !== sellerId) {
+      return {
+        success: false,
+        statusCode: 403,
+        error: "Forbidden. You do not own this product.",
+      };
+    }
 
+    const { title, description, price, image_url, image_alt, category_id } =
+      validation.data;
+
+    // Verify category if provided
+    if (category_id) {
+      const catCheck = await db.query(
+        "SELECT id FROM categories WHERE id = $1",
+        [category_id],
+      );
+      if (catCheck.rows.length === 0) {
+        return {
+          success: false,
+          statusCode: 400,
+          error: "Selected category does not exist.",
+        };
+      }
+    }
+
+    const query = `
+      UPDATE products
+      SET title = COALESCE($1, title),
+          description = COALESCE($2, description),
+          price = COALESCE($3, price),
+          image_url = COALESCE($4, image_url),
+          image_alt = COALESCE($5, image_alt),
+          category_id = COALESCE($6, category_id)
+      WHERE id = $7
+      RETURNING *;
+    `;
+
+    const values = [
+      title && title.trim() ? title.trim() : null,
+      description && description.trim() ? description.trim() : null,
+      price ?? null,
+      image_url ?? null,
+      image_alt && image_alt.trim() ? image_alt.trim() : null,
+      category_id ?? null,
+      productId,
+    ];
+
+    const result = await db.query(query, values);
+
+    // Revalidar cachés
+    revalidatePath("/product");
+    revalidatePath(`/product/${productId}`);
     revalidatePath("/shop");
-    revalidatePath(`/products/${id}`);
 
     return {
       success: true,
-      data: updateResult.rows[0],
       statusCode: 200,
+      data: result.rows[0] as Product,
     };
-  } catch (error: unknown) {
-    console.error("Service Error while updating product:", error);
+  } catch (error: any) {
+    console.error("Error in updateProduct:", error);
     return {
       success: false,
-      error: "Internal Server Error while updating product.",
       statusCode: 500,
+      error: "Internal Server Error while updating product.",
     };
   }
 }
@@ -400,66 +418,57 @@ export async function updateProduct(input: unknown): Promise<ServiceResponse> {
  * Deletes a product using Zod validation for the UUID.
  */
 export async function deleteProduct(
-  productId: unknown,
-): Promise<ServiceResponse> {
+  productId: string,
+  sellerId: string,
+): Promise<ServiceResponse<boolean>> {
   try {
-    /*  const user = await getAuthenticatedUser();
-
-    if (!user) {
-      return {
-        success: false,
-        error: "Unauthorized. Please log in.",
-        statusCode: 401,
-      };
-    }*/
-
-    // 1. Zod Validation for UUID
+    // 1. Validar formato de ID con Zod
     const validation = productIdSchema.safeParse({ id: productId });
     if (!validation.success) {
       return {
         success: false,
-        error: "Invalid product ID format.",
         statusCode: 400,
+        error: validation.error.issues[0]?.message || "Invalid product ID",
       };
     }
 
-    const { id } = validation.data;
     const db = getDb();
 
-    // 2. Check product existence and ownership
-    const productCheck = await db.query(
-      "SELECT seller_id FROM products WHERE id = $1",
-      [id],
-    );
+    // 2. Opcional: Eliminar reseñas asociadas primero si no tienes ON DELETE CASCADE en la BD
+    await db.query("DELETE FROM reviews WHERE product_id = $1", [productId]);
 
-    if (productCheck.rows.length === 0) {
-      return { success: false, error: "Product not found.", statusCode: 404 };
-    }
+    // 3. Eliminar el producto asegurando que pertenece al vendedor autenticado
+    const query = `
+      DELETE FROM products
+      WHERE id = $1 AND seller_id = $2
+      RETURNING id;
+    `;
 
-    if (productCheck.rows[0].seller_id !== user.id) {
+    const result = await db.query(query, [productId, sellerId]);
+
+    if (result.rowCount === 0) {
       return {
         success: false,
-        error: "Forbidden. You do not own this product.",
-        statusCode: 403,
+        statusCode: 404,
+        error: "Product not found or you do not have permission to delete it.",
       };
     }
 
-    await db.query("DELETE FROM products WHERE id = $1", [id]);
-
+    // 4. Revalidar los cachés de Next.js para actualizar las vistas inmediatamente
+    revalidatePath("/product");
     revalidatePath("/shop");
-    revalidatePath("/products");
 
     return {
       success: true,
-      data: { message: "Product deleted successfully." },
       statusCode: 200,
+      data: true,
     };
-  } catch (error: unknown) {
-    console.error("Service Error while deleting product:", error);
+  } catch (error: any) {
+    console.error("Error in deleteProduct:", error);
     return {
       success: false,
-      error: "Internal Server Error while deleting product.",
       statusCode: 500,
+      error: "Internal Server Error while deleting product.",
     };
   }
 }

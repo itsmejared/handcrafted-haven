@@ -1,7 +1,5 @@
-import Link from 'next/link';
-import Header from '@/app/ui/header';
-import Footer from '@/app/ui/footer';
-import { Heart, Coins, Users, Sparkles } from 'lucide-react';
+import Link from "next/link";
+import { Heart, Coins, Users, Sparkles } from "lucide-react";
 
 const incentives = [
   {
@@ -29,8 +27,6 @@ const incentives = [
 export default function AboutPage() {
   return (
     <main>
-      <Header />
-
       {/* Hero */}
       <section className="bg-[#F5F0E8] px-6 md:px-12 py-12 md:py-20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -39,18 +35,19 @@ export default function AboutPage() {
               ✦ Our Story
             </span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#3D2B1F] mb-6 leading-tight">
-              Built for Artisans, <span className="text-[#C4622D]">Not Algorithms</span>
+              Built for Artisans,{" "}
+              <span className="text-[#C4622D]">Not Algorithms</span>
             </h1>
             <div className="w-24 h-1 bg-[#7C9E87] mb-6 rounded-full"></div>
             <p className="text-base md:text-lg text-[#3D2B1F] opacity-75 leading-relaxed mb-4">
-              Handcrafted Haven connects talented artisans with people who appreciate
-              the beauty of handmade products. Every piece on our platform tells a story
-              of passion, craftsmanship, and care.
+              Handcrafted Haven connects talented artisans with people who
+              appreciate the beauty of handmade products. Every piece on our
+              platform tells a story of passion, craftsmanship, and care.
             </p>
             <p className="text-base md:text-lg text-[#3D2B1F] opacity-75 leading-relaxed">
-              We built this platform because independent makers deserve a home that
-              understands handmade work — not a corner of a marketplace built for
-              mass production.
+              We built this platform because independent makers deserve a home
+              that understands handmade work — not a corner of a marketplace
+              built for mass production.
             </p>
           </div>
           <div className="relative w-full max-w-md mx-auto md:max-w-none">
@@ -74,7 +71,8 @@ export default function AboutPage() {
           </h2>
           <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-6"></div>
           <p className="text-[#3D2B1F] opacity-75 text-lg">
-            You have options for where to sell your work. Here's what makes Handcrafted Haven different.
+            You have options for where to sell your work. Here&apos;s what
+            makes Handcrafted Haven different.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
@@ -87,12 +85,19 @@ export default function AboutPage() {
               >
                 <div className="shrink-0">
                   <div className="w-12 h-12 rounded-full bg-[#C4622D]/10 flex items-center justify-center">
-                    <Icon className="w-6 h-6 text-[#C4622D]" strokeWidth={1.5} />
+                    <Icon
+                      className="w-6 h-6 text-[#C4622D]"
+                      strokeWidth={1.5}
+                    />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[#3D2B1F] mb-2">{item.title}</h3>
-                  <p className="text-[#3D2B1F] opacity-70 text-sm leading-relaxed">{item.desc}</p>
+                  <h3 className="text-lg font-bold text-[#3D2B1F] mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-[#3D2B1F] opacity-70 text-sm leading-relaxed">
+                    {item.desc}
+                  </p>
                 </div>
               </div>
             );
@@ -115,8 +120,6 @@ export default function AboutPage() {
           Become a Seller
         </Link>
       </section>
-
-      <Footer />
     </main>
   );
 }
