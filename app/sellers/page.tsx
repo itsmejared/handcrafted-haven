@@ -1,7 +1,5 @@
-import Link from 'next/link';
-import Header from '@/app/ui/header';
-import Footer from '@/app/ui/footer';
-import { getDb } from '@/app/lib/db';
+import Link from "next/link";
+import { getDb } from "@/app/lib/db";
 
 interface SellerListing {
   id: string;
@@ -20,15 +18,16 @@ export default async function SellersPage() {
     );
     sellers = result.rows;
   } catch (error) {
-    console.error('Database error on sellers page:', error);
+    console.error("Database error on sellers page:", error);
   }
 
   return (
     <main>
-      <Header />
       <section className="px-6 md:px-8 py-16 bg-[#FDFAF6]">
         <div className="text-center mb-12 max-w-2xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">Meet Our Sellers</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-4">
+            Meet Our Sellers
+          </h1>
           <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-6"></div>
           <p className="text-[#3D2B1F] opacity-75 text-lg">
             Get to know the artisans behind every handcrafted piece.
@@ -36,7 +35,9 @@ export default async function SellersPage() {
         </div>
 
         {sellers.length === 0 ? (
-          <p className="text-center text-[#3D2B1F] opacity-70">No sellers yet.</p>
+          <p className="text-center text-[#3D2B1F] opacity-70">
+            No sellers yet.
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
             {sellers.map((seller) => (
@@ -61,7 +62,9 @@ export default async function SellersPage() {
                   )}
                 </div>
                 <div className="p-6 text-center">
-                  <h3 className="text-xl font-bold text-[#3D2B1F]">{seller.name}</h3>
+                  <h3 className="text-xl font-bold text-[#3D2B1F]">
+                    {seller.name}
+                  </h3>
                 </div>
               </Link>
             ))}
@@ -69,7 +72,9 @@ export default async function SellersPage() {
         )}
 
         <div className="text-center mt-16">
-          <h2 className="text-2xl font-bold text-[#3D2B1F] mb-4">Want to join them?</h2>
+          <h2 className="text-2xl font-bold text-[#3D2B1F] mb-4">
+            Want to join them?
+          </h2>
           <Link
             href="/register"
             className="inline-block px-8 py-4 bg-[#C4622D] text-white rounded-full text-lg font-medium hover:bg-[#3D2B1F] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
@@ -78,7 +83,6 @@ export default async function SellersPage() {
           </Link>
         </div>
       </section>
-      <Footer />
     </main>
   );
 }

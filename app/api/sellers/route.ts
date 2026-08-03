@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/app/lib/db";
-import { User } from "@/app/lib/types";
 
 // GET: Fetch all public artisan profiles (sellers)
 export async function GET() {
@@ -24,7 +23,7 @@ export async function GET() {
       profile_image_url: row.profile_image_url,
       role: "artisan",
       createdAt: row.created_at,
-      created_at: row.created_at
+      created_at: row.created_at,
     }));
 
     return NextResponse.json(sellers, { status: 200 });
@@ -32,7 +31,7 @@ export async function GET() {
     console.error("API Error while fetching sellers storefront list:", error);
     return NextResponse.json(
       { error: "Internal Server Error while loading the artisan profiles." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

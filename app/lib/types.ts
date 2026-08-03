@@ -21,10 +21,10 @@ export interface Category {
 }
 
 export interface Product {
-  id: string; // UUID format
+  id: string;
   title: string;
   description: string;
-  price: number; // Mapped from DECIMAL
+  price: number;
   image_url: string;
   image_alt: string;
   seller_id: string;
@@ -32,11 +32,13 @@ export interface Product {
   created_at: string;
 }
 
-export interface ProductWithDetails extends Product {
-  seller_name: string;
+export interface ProductDetails extends Product {
   category_name: string;
   reviews_count: number;
   rating_average: number;
+  seller_name: string;
+  seller_bio: string;
+  seller_image: string | null;
 }
 
 export interface Review {
@@ -46,4 +48,12 @@ export interface Review {
   rating: number; // Enforced 1 to 5
   comment?: string | null;
   created_at: string;
+  reviewer_name: string;
+}
+
+export interface ServiceResponse<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  statusCode: number;
 }
