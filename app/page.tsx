@@ -1,28 +1,13 @@
 import Link from "next/link";
-import Header from "@/app/ui/header";
-import Footer from "@/app/ui/footer";
-import { getDb } from "@/app/lib/db";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
 import { getCategories } from "@/app/services/categories";
 import { getProducts } from "./services/products";
-
-// Extended interface specifically for UI presentation to join the seller name
-interface StorefrontProduct {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  image_url: string;
-  image_alt: string;
-  seller_name: string; // From the users JOIN query
-}
 
 export default async function Home() {
   let products: any[] = [];
   let categories: any[] = [];
 
   try {
-    const db = getDb();
     categories = await getCategories();
     const response = await getProducts({ page: 1, limit: 3, sort: "newest" });
     ({ data: products } = response);
@@ -37,8 +22,6 @@ export default async function Home() {
 
   return (
     <main>
-      <Header />
-
       {/* Hero Section */}
       <section className="bg-[#F5F0E8] px-6 md:px-12 py-12 md:py-16">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -110,8 +93,9 @@ export default async function Home() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
           {categories.map((category) => (
-            <div
+            <Link
               key={category.id}
+              href={`/shop?category_id=${category.id}`}
               className="flex flex-col items-center p-8 bg-[#F5F0E8] rounded-2xl hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1 border-b-4 border-[#7C9E87]"
             >
               <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg border-4 border-[#FDFAF6] mb-4">
@@ -129,7 +113,7 @@ export default async function Home() {
               <p className="text-center text-[#3D2B1F] opacity-70">
                 {category.description}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -144,9 +128,10 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
           {products.map((product) => (
-            <div
+            <Link
               key={product.id}
-              className="bg-[#FDFAF6] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
+              href={`/product/${product.id}`}
+              className="group bg-[#F5F0E8] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
               <div className="h-48 border-b-4 border-[#7C9E87]">
                 <img
@@ -195,12 +180,10 @@ export default async function Home() {
                   />
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
-
-      <Footer />
 
       <style>{`
         @keyframes float {
