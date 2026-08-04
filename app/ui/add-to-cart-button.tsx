@@ -1,30 +1,46 @@
-'use client';
+"use client";
 
-import { useCart } from '@/app/lib/cart-context';
+import { useCart } from "@/app/context/cart-context";
+import { ShoppingCart } from "lucide-react";
 
 interface AddToCartButtonProps {
+  id: string;
   name: string;
   price: number;
   image: string;
   seller: string;
 }
 
-export default function AddToCartButton({ name, price, image, seller }: AddToCartButtonProps) {
+export default function AddToCartButton({
+  id,
+  name,
+  price,
+  image,
+  seller,
+}: AddToCartButtonProps) {
   const { addItem } = useCart();
 
-  function handleClick(e: React.MouseEvent) {
-    // Prevent this click from bubbling up to any parent Link or card-level handler
+  function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
-    addItem({ name, price, image, seller });
+
+    addItem({
+      id,
+      name,
+      price,
+      image,
+      seller,
+    });
   }
 
   return (
     <button
       onClick={handleClick}
-      className="px-4 py-2 bg-[#C4622D] text-white rounded-full text-sm hover:bg-[#3D2B1F] transition-colors"
+      className="flex items-center justify-center gap-2 px-4 py-2 bg-[#C4622D] text-white rounded-xl text-sm font-medium hover:bg-[#3D2B1F] transition-all shadow-sm active:scale-95 cursor-pointer"
+      aria-label={`Add ${name} to cart`}
     >
-      Add to Cart
+      <ShoppingCart className="w-4 h-4" />
+      <span>Add to Cart</span>
     </button>
   );
 }

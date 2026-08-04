@@ -1,21 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/app/lib/auth-context";
+import { useAuth } from "@/app/context/auth-context";
+import { success } from "zod";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { register } = useAuth();
+  const searchParams = useSearchParams();
+  // const { register } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     role: "customer" as "customer" | "seller",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const redirectUrl = searchParams.get("redirect");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,11 +29,28 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     setLoading(true);
-    const result = await register(formData);
+    /*const result = await register({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+    });*/
     setLoading(false);
+    const result = { success: false, error: "refactoring" };
     if (result.success) {
       router.push("/");
+      // Check return URL from query param or sessionStorage
+      const savedRedirect = sessionStorage.getItem("redirectAfterLogin");
+      sessionStorage.removeItem("redirectAfterLogin");
+      const target = redirectUrl || savedRedirect || "/";
+      router.push(target);
     } else {
       setError(result.error || "Registration failed.");
     }
@@ -105,6 +127,44 @@ export default function RegisterPage() {
             </div>
 
             <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-[#3D2B1F] mb-2"
+              >
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                required
+                minLength={6}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-md border border-[#7C9E87]/40 focus:outline-none focus:border-[#C4622D] transition-colors"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-[#3D2B1F] mb-2"
+              >
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                required
+                minLength={6}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-md border border-[#7C9E87]/40 focus:outline-none focus:border-[#C4622D] transition-colors"
+              />
+            </div>
+
+            <div>
               <span className="block text-sm font-medium text-[#3D2B1F] mb-2">
                 I am a...
               </span>
@@ -149,7 +209,11 @@ export default function RegisterPage() {
             <p className="text-center text-sm text-[#3D2B1F] opacity-75">
               Already have an account?{" "}
               <Link
-                href="/login"
+                href={
+                  redirectUrl
+                    ? `/login?redirect=${encodeURIComponent(redirectUrl)}`
+                    : "/login"
+                }
                 className="text-[#C4622D] font-medium hover:underline"
               >
                 Log in

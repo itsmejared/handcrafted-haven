@@ -47,7 +47,7 @@ export default async function Home() {
                 Shop Now
               </Link>
               <Link
-                href="/sellers"
+                href="/register"
                 className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-[#C4622D] text-[#C4622D] rounded-full text-base sm:text-lg font-medium hover:bg-[#C4622D] hover:text-white transition-all duration-300"
               >
                 Become a Seller
@@ -173,6 +173,7 @@ export default async function Home() {
                     ${Number(product.price).toFixed(2)}
                   </span>
                   <AddToCartButton
+                    id={product.id}
                     name={product.title}
                     price={Number(product.price)}
                     image={product.image_url}

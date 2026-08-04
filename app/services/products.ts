@@ -272,7 +272,6 @@ export async function createProduct(
       RETURNING *;
     `;
 
-    // Fallback limpio para image_alt en caso de no venir en el payload
     const finalAlt =
       image_alt && image_alt.trim().length > 0
         ? image_alt.trim()
@@ -290,7 +289,6 @@ export async function createProduct(
 
     const result = await db.query(query, values);
 
-    // Revalidar los cachés de Next.js para actualizar la vista de la tienda y el listado de productos
     revalidatePath("/product");
     revalidatePath("/shop");
 
@@ -394,7 +392,6 @@ export async function updateProduct(
 
     const result = await db.query(query, values);
 
-    // Revalidar cachés
     revalidatePath("/product");
     revalidatePath(`/product/${productId}`);
     revalidatePath("/shop");
@@ -422,7 +419,6 @@ export async function deleteProduct(
   sellerId: string,
 ): Promise<ServiceResponse<boolean>> {
   try {
-    // 1. Validar formato de ID con Zod
     const validation = productIdSchema.safeParse({ id: productId });
     if (!validation.success) {
       return {
@@ -434,10 +430,8 @@ export async function deleteProduct(
 
     const db = getDb();
 
-    // 2. Opcional: Eliminar reseñas asociadas primero si no tienes ON DELETE CASCADE en la BD
     await db.query("DELETE FROM reviews WHERE product_id = $1", [productId]);
 
-    // 3. Eliminar el producto asegurando que pertenece al vendedor autenticado
     const query = `
       DELETE FROM products
       WHERE id = $1 AND seller_id = $2
@@ -454,7 +448,6 @@ export async function deleteProduct(
       };
     }
 
-    // 4. Revalidar los cachés de Next.js para actualizar las vistas inmediatamente
     revalidatePath("/product");
     revalidatePath("/shop");
 

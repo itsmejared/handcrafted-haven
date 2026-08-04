@@ -34,7 +34,6 @@ export const productSchema = z.object({
     .min(10, "Description must be at least 10 characters"),
   price: z.coerce.number().positive("Price must be a positive number"),
   image_url: imageUrlOrBase64,
-  // Hacemos image_alt opcional en el schema de entrada para permitir que el server ponga el title por defecto
   image_alt: z.string().trim().optional(),
   seller_id: z.uuid("Invalid seller selected."),
   category_id: z.coerce.number().int().positive("Invalid category selected."),

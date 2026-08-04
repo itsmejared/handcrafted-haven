@@ -71,7 +71,7 @@ export default function ProductReviewsCarousel({
         </div>
 
         <p className="text-sm text-[#3D2B1F]/90 italic">
-          "{currentReview.comment || "No written review provided."}"
+          &quot;{currentReview.comment || "No written review provided."}&quot;
         </p>
 
         <div className="flex items-center justify-between text-xs text-[#3D2B1F]/60 pt-2">

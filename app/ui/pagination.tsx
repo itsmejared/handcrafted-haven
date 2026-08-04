@@ -12,7 +12,6 @@ export default function Pagination({ totalPages }: PaginationProps) {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  // Genera la URL preservando los filtros existentes
   const createPageURL = (pageNumber: number) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNumber.toString());
