@@ -17,7 +17,7 @@ export default async function SellerDetailPage({
   const { id } = await params;
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
-  const limit = 4;
+  const limit = 6;
 
   // Parallel fetch: seller profile and seller products
   const [seller, productsResult] = await Promise.all([
@@ -35,8 +35,8 @@ export default async function SellerDetailPage({
     <main className="min-h-screen bg-[#FDFAF6]">
       {/* Seller Hero Section */}
       <section className="px-6 md:px-12 py-16 md:py-20 bg-[#F5F0E8]">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="w-full max-w-sm aspect-[3/4] rounded-2xl overflow-hidden shadow-xl border-4 border-[#FDFAF6] mx-auto mb-6 bg-[#E8DFD3]">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-10">
+          <div className="w-48 md:w-56 aspect-square flex-shrink-0 rounded-2xl overflow-hidden shadow-xl border-4 border-[#FDFAF6] bg-[#E8DFD3]">
             {seller.profile_image_url ? (
               <img
                 src={seller.profile_image_url}
@@ -44,18 +44,20 @@ export default async function SellerDetailPage({
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-[#7C9E87]">
+              <div className="w-full h-full flex items-center justify-center text-[#7C9E87] text-sm">
                 No photo yet
               </div>
             )}
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-2">
-            {seller.name}
-          </h1>
-          <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-6"></div>
-          <p className="text-[#3D2B1F] opacity-75 text-lg leading-relaxed">
-            {seller.bio || "This seller has not written a bio yet."}
-          </p>
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl font-bold text-[#3D2B1F] mb-2">
+              {seller.name}
+            </h1>
+            <div className="w-24 h-1 bg-[#7C9E87] mx-auto md:mx-0 rounded-full mb-6"></div>
+            <p className="text-[#3D2B1F] opacity-75 text-lg leading-relaxed">
+              {seller.bio || "This seller has not written a bio yet."}
+            </p>
+          </div>
         </div>
       </section>
 
