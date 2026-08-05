@@ -2,6 +2,7 @@ import Link from "next/link";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
 import { getCategories } from "@/app/services/categories";
 import { getProducts } from "./services/products";
+import Image from "next/image";
 
 export default async function Home() {
   let products: any[] = [];
@@ -62,16 +63,18 @@ export default async function Home() {
             <div className="absolute top-6 left-6 w-full aspect-[4/5] bg-[#7C9E87] rounded-3xl opacity-30"></div>
             <div className="absolute top-3 left-3 w-full aspect-[4/5] bg-[#C4622D] rounded-3xl opacity-20"></div>
             <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#F5F0E8]">
-              <img
-                src="/handcrafted-hero.webp"
-                alt="Colorful handcrafted guitars hanging in a row"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#3D2B1F] to-transparent"></div>
-              <div className="absolute bottom-4 left-4 text-white font-bold text-base sm:text-lg">
-                Handcrafted with ❤️
-              </div>
+            <Image
+              src="/handcrafted-hero.webp"
+              alt="Colorful handcrafted guitars hanging in a row"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#3D2B1F] to-transparent"></div>
+            <div className="absolute bottom-4 left-4 text-white font-bold text-base sm:text-lg">
+              Handcrafted with ❤️
             </div>
+          </div>
             <div className="absolute -top-4 -right-4 bg-[#7C9E87] text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
               1000+ Vendors
             </div>
@@ -98,15 +101,14 @@ export default async function Home() {
               href={`/shop?category_id=${category.id}`}
               className="flex flex-col items-center p-8 bg-[#F5F0E8] rounded-2xl hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1 border-b-4 border-[#7C9E87]"
             >
-              <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg border-4 border-[#FDFAF6] mb-4">
-                <img
-                  src={category.image_url}
-                  alt={category.image_alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+          <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg border-4 border-[#FDFAF6] mb-4 relative">
+            <Image
+              src={category.image_url}
+              alt={category.image_alt}
+              fill
+              className="object-cover"
+            />
+          </div>
               <h3 className="text-xl font-bold text-[#3D2B1F] mb-2">
                 {category.name}
               </h3>
@@ -133,15 +135,14 @@ export default async function Home() {
               href={`/product/${product.id}`}
               className="group bg-[#F5F0E8] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
-              <div className="h-48 border-b-4 border-[#7C9E87]">
-                <img
-                  src={product.image_url}
-                  alt={product.image_alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+            <div className="h-48 border-b-4 border-[#7C9E87] relative">
+            <Image
+              src={product.image_url}
+              alt={product.image_alt}
+              fill
+              className="object-cover"
+            />
+            </div>
               <div className="p-6">
                 <h3 className="text-lg font-bold text-[#3D2B1F] mb-1">
                   {product.title}

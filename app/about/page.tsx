@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Heart, Coins, Users, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 const incentives = [
   {
@@ -52,13 +53,15 @@ export default function AboutPage() {
           </div>
           <div className="relative w-full max-w-md mx-auto md:max-w-none">
             <div className="absolute top-4 left-4 w-full aspect-[4/5] bg-[#7C9E87] rounded-3xl opacity-30"></div>
-            <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#FDFAF6]">
-              <img
-                src="/guitar player.webp"
-                alt="Artisan playing a custom electric guitar"
-                className="w-full h-full object-cover"
-              />
-            </div>
+          <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#FDFAF6]">
+            <Image
+              src="/guitar player.webp"
+              alt="Artisan playing a custom electric guitar"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
           </div>
         </div>
       </section>

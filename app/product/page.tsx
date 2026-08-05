@@ -5,6 +5,7 @@ import DeleteProductButton from "../ui/product/delete-product-button";
 import Pagination from "@/app/ui/pagination";
 import { Plus, Pencil } from "lucide-react";
 import { getProductsBySeller, deleteProduct } from "@/app/services/products";
+import Image from "next/image";
 
 interface ProductsPageProps {
   searchParams: Promise<{ page?: string }>;
@@ -152,13 +153,13 @@ export default async function VendorProductsPage({
                         >
                           <td className="py-4 px-4">
                             <div className="flex items-center space-x-3">
-                              <img
-                                src={product.image_url}
-                                alt={product.image_alt || product.title}
-                                loading="lazy"
-                                decoding="async"
-                                className="w-12 h-12 rounded-lg object-cover border border-[#7C9E87]/30"
-                              />
+                            <Image
+                              src={product.image_url}
+                              alt={product.image_alt || product.title}
+                              width={48}
+                              height={48}
+                              className="w-12 h-12 rounded-lg object-cover border border-[#7C9E87]/30"
+                            />
                               <div>
                                 <p className="font-semibold text-[#3D2B1F]">
                                   <Link
