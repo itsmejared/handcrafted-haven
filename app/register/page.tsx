@@ -10,13 +10,15 @@ export default function RegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   // const { register } = useAuth();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "customer" as "customer" | "seller",
-  });
+    const [formData, setFormData] = useState({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      role: (searchParams.get("role") === "seller" ? "seller" : "customer") as
+        | "customer"
+        | "seller",
+    });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -121,25 +123,6 @@ export default function RegisterPage() {
                 required
                 minLength={6}
                 value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-md border border-[#7C9E87]/40 focus:outline-none focus:border-[#C4622D] transition-colors"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-[#3D2B1F] mb-2"
-              >
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-                minLength={6}
-                value={formData.confirmPassword}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-md border border-[#7C9E87]/40 focus:outline-none focus:border-[#C4622D] transition-colors"
               />

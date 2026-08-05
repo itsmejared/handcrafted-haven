@@ -9,8 +9,7 @@ interface SellersPageProps {
 export default async function SellersPage({ searchParams }: SellersPageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
-  const limit = 6;
-
+  const limit = 9;
   const { sellers, pagination } = await getSellers({
     page: currentPage,
     limit,
@@ -41,7 +40,7 @@ export default async function SellersPage({ searchParams }: SellersPageProps) {
                 href={`/sellers/${seller.id}`}
                 className="bg-[#F5F0E8] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-b-4 border-[#7C9E87]"
               >
-                <div className="w-full aspect-[3/4] overflow-hidden bg-[#E8DFD3]">
+                <div className="w-full aspect-square overflow-hidden bg-[#E8DFD3]">
                   {seller.profile_image_url ? (
                     <img
                       src={seller.profile_image_url}
@@ -56,8 +55,8 @@ export default async function SellersPage({ searchParams }: SellersPageProps) {
                     </div>
                   )}
                 </div>
-                <div className="p-6 text-center">
-                  <h3 className="text-xl font-bold text-[#3D2B1F]">
+                <div className="p-3 text-center">
+                  <h3 className="text-sm font-semibold text-[#3D2B1F] line-clamp-1">
                     {seller.name}
                   </h3>
                 </div>

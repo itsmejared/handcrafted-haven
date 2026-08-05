@@ -114,7 +114,7 @@ export default function AboutPage() {
           Join a community built specifically for makers like you.
         </p>
         <Link
-          href="/sellers"
+          href="/register?role=seller"
           className="inline-block px-8 py-4 bg-[#C4622D] text-white rounded-full text-lg font-medium hover:bg-[#3D2B1F] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
         >
           Become a Seller
