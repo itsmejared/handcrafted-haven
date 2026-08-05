@@ -4,7 +4,7 @@ import { getSellerById } from "@/app/services/sellers";
 import { getProductsBySeller } from "@/app/services/products";
 import Pagination from "@/app/ui/pagination";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
-
+import Image from "next/image";
 interface SellerDetailPageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -36,14 +36,16 @@ export default async function SellerDetailPage({
       {/* Seller Hero Section */}
       <section className="px-6 md:px-12 py-16 md:py-20 bg-[#F5F0E8]">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-10">
-          <div className="w-48 md:w-56 aspect-square flex-shrink-0 rounded-2xl overflow-hidden shadow-xl border-4 border-[#FDFAF6] bg-[#E8DFD3]">
+          <div className="w-48 md:w-56 aspect-square flex-shrink-0 rounded-2xl overflow-hidden shadow-xl border-4 border-[#FDFAF6] bg-[#E8DFD3] relative">
             {seller.profile_image_url ? (
-              <img
+              <Image
                 src={seller.profile_image_url}
                 alt={seller.name}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             ) : (
+
               <div className="w-full h-full flex items-center justify-center text-[#7C9E87] text-sm">
                 No photo yet
               </div>
@@ -88,14 +90,14 @@ export default async function SellerDetailPage({
                     href={`/product/${product.id}`}
                     className="block flex-1"
                   >
-                    <div className="w-full aspect-square overflow-hidden bg-[#E8DFD3]">
-                      <img
-                        src={product.image_url}
-                        alt={product.image_alt || product.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                    </div>
+          <div className="w-full aspect-square overflow-hidden bg-[#E8DFD3] relative">
+            <Image
+              src={product.image_url}
+              alt={product.image_alt || product.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
                     <div className="p-5 flex flex-col">
                       <span className="text-xs uppercase tracking-wider text-[#7C9E87] font-semibold mb-1">
                         {product.category_name}

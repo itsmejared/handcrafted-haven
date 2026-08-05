@@ -3,7 +3,7 @@ import AddToCartButton from "@/app/ui/add-to-cart-button";
 import { notFound } from "next/navigation";
 import { getReviewsByProductId } from "@/app/services/reviews";
 import ProductReviewsCarousel from "@/app/ui/product/product-reviews-carousel";
-
+import Image from "next/image";
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -28,13 +28,15 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <section className="px-6 md:px-12 py-16 md:py-24 bg-[#F5F0E8] min-h-[70vh]">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
           <div>
-            <div className="w-full aspect-square rounded-2xl overflow-hidden border-4 border-[#7C9E87] shadow-sm">
-              <img
-                src={product.image_url}
-                alt={product.image_alt || product.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
+          <div className="w-full aspect-square rounded-2xl overflow-hidden border-4 border-[#7C9E87] shadow-sm relative">
+            <Image
+              src={product.image_url}
+              alt={product.image_alt || product.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
           </div>
 
           <div className="flex flex-col justify-between">
@@ -83,11 +85,13 @@ export default async function ProductDetailPage({ params }: PageProps) {
             {product.seller_bio && (
               <div className="mt-10 pt-6 border-t border-[#7C9E87]/30">
                 <div className="flex items-center gap-3 mb-3">
-                  <img
-                    src={product.seller_image || "/images/default-avatar.png"}
-                    alt={product.seller_name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-[#7C9E87]"
-                  />
+                <Image
+                  src={product.seller_image || "/images/default-avatar.png"}
+                  alt={product.seller_name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-[#7C9E87]"
+                />
                   <div>
                     <h2 className="text-sm font-semibold text-[#3D2B1F]">
                       About {product.seller_name}
