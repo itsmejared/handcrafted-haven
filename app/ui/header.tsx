@@ -43,7 +43,7 @@ export default function Header() {
         </Link>
 
         {/* Navigation Links - Desktop */}
-        <div className="hidden md:flex flex-1 items-center justify-center gap-8 text-[#3D2B1F] font-medium mx-6">
+        <div className="hidden lg:flex flex-1 items-center justify-center gap-8 text-[#3D2B1F] font-medium mx-6">
           <Link href="/" className="hover:text-[#C4622D] transition-colors">
             Home
           </Link>
@@ -65,7 +65,7 @@ export default function Header() {
         </div>
 
         {/* User Actions & Cart - Desktop */}
-        <div className="hidden md:flex items-center gap-4 shrink-0">
+        <div className="hidden lg:flex items-center gap-4 shrink-0">
           {/* Shopping Cart Button */}
           <Link
             href="/cart"
@@ -163,7 +163,7 @@ export default function Header() {
         </div>
 
         {/* Mobile controls (Cart + Hamburger) */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <Link
             href="/cart"
             aria-label="Cart"
@@ -193,7 +193,7 @@ export default function Header() {
 
         {/* Mobile menu dropdown */}
         {menuOpen && (
-          <div className="absolute top-full left-0 right-0 flex flex-col gap-3 bg-[#FDFAF6] border-b-4 border-[#7C9E87] shadow-xl px-6 py-6 md:hidden z-50">
+          <div className="absolute top-full left-0 right-0 flex flex-col gap-3 bg-[#FDFAF6] border-b-4 border-[#7C9E87] shadow-xl px-6 py-6 lg:hidden z-50">
             {/* User Profile Card (Mobile) */}
             {user && (
               <div className="flex items-center gap-3 p-3 bg-[#F5F0E8] rounded-2xl border border-[#7C9E87]/30 mb-2">
