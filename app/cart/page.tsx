@@ -186,12 +186,12 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <button
-                disabled
-                className="w-full mt-6 py-4 bg-[#C4622D] text-white rounded-full text-base font-medium hover:bg-[#3D2B1F] transition-all duration-300 shadow-md disabled:opacity-75 disabled:cursor-not-allowed"
+              <Link
+                href="/checkout"
+                className="block w-full mt-6 py-4 bg-[#C4622D] text-white rounded-full text-base font-medium text-center hover:bg-[#3D2B1F] transition-all duration-300 shadow-md"
               >
-                Checkout (Coming Soon)
-              </button>
+                Checkout
+              </Link>
 
               <p className="text-xs text-center text-[#3D2B1F]/60 mt-4">
                 🔒 Secure checkout powered by Handcrafted Haven
