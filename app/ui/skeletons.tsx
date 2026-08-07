@@ -338,3 +338,39 @@ export function RegisterSkeleton() {
     </div>
   );
 }
+
+export function ReviewSkeleton() {
+  return (
+    <div className="bg-[#FAF7F2] min-h-screen text-[#3D2B1F] flex flex-col justify-between">
+      <main className="max-w-6xl mx-auto px-4 py-8 w-full animate-pulse">
+        {/* Title*/}
+        <div className="h-8 w-48 bg-[#E8DFD3] rounded-md mb-6"></div>
+
+        {/* Tabs Skeleton */}
+        <div className="flex gap-4 mb-6 border-b border-[#E8DFD3] pb-3">
+          <div className="h-10 w-28 bg-[#E8DFD3] rounded-lg"></div>
+          <div className="h-10 w-32 bg-[#E8DFD3] rounded-lg"></div>
+          <div className="h-10 w-28 bg-[#E8DFD3] rounded-lg"></div>
+        </div>
+
+        {/* Cards Skeleton Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="bg-[#F5F0E8] p-4 rounded-xl border border-[#E8DFD3] flex gap-4 items-start"
+            >
+              <div className="w-20 h-20 bg-[#E8DFD3] rounded-lg shrink-0"></div>
+              <div className="flex-1 space-y-2">
+                <div className="h-3 w-16 bg-[#E8DFD3] rounded"></div>
+                <div className="h-5 w-3/4 bg-[#E8DFD3] rounded"></div>
+                <div className="h-3 w-1/2 bg-[#E8DFD3] rounded"></div>
+                <div className="h-12 w-full bg-[#E8DFD3]/60 rounded-lg mt-2"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+}

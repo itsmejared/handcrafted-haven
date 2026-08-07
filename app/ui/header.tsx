@@ -12,6 +12,7 @@ import {
   LogIn,
   UserPlus,
   Store,
+  ClipboardList,
 } from "lucide-react";
 import { useCart } from "@/app/context/cart-context";
 import { useAuth } from "@/app/context/auth-context";
@@ -66,6 +67,15 @@ export default function Header() {
           >
             About
           </Link>
+          {/* Reviews is only shown if it is authenticated. */}
+          {user && (
+            <Link
+              href="/reviews"
+              className="hover:text-[#C4622D] transition-colors font-medium"
+            >
+              Reviews
+            </Link>
+          )}
         </div>
 
         {/* User Actions & Cart - Desktop */}
@@ -132,10 +142,17 @@ export default function Header() {
                     </Link>
                   </>
                 ) : (
-                  <span></span>
+                  <Link
+                    href="/orders"
+                    title="My Orders"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#3D2B1F] hover:text-[#C4622D] hover:bg-white rounded-full transition-all"
+                  >
+                    <ClipboardList className="w-3.5 h-3.5" />
+                    <span>My Orders</span>
+                  </Link>
                 )}
 
-                {/* Sign Out Button (Llama al logout del context) */}
+                {/* Sign Out Button */}
                 <button
                   onClick={() => logout()}
                   title="Sign Out"
@@ -250,6 +267,16 @@ export default function Header() {
             >
               About
             </Link>
+            {/* Reviews is only shown if it is authenticated. */}
+            {user && (
+              <Link
+                href="/reviews"
+                className="py-2 text-[#3D2B1F] font-medium hover:text-[#C4622D] border-b border-[#3D2B1F]/5"
+                onClick={() => setMenuOpen(false)}
+              >
+                Reviews
+              </Link>
+            )}
 
             {/* Role-Specific Actions (Mobile) */}
             {user ? (
@@ -272,6 +299,19 @@ export default function Header() {
                     >
                       <User className="w-4 h-4 text-[#C4622D]" />
                       <span>My Profile</span>
+                    </Link>
+                  </>
+                )}
+
+                {user.role === "customer" && (
+                  <>
+                    <Link
+                      href="/orders"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-[#3D2B1F] bg-[#F5F0E8] border border-[#7C9E87]/40 rounded-xl hover:bg-white transition-colors"
+                    >
+                      <ClipboardList className="w-4 h-4 text-[#C4622D]" />
+                      <span>My Orders</span>
                     </Link>
                   </>
                 )}
