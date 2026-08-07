@@ -46,7 +46,7 @@ export default async function SellersPage({ searchParams }: SellersPageProps) {
                     <Image
                       src={seller.profile_image_url}
                       alt={seller.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       width={320}
                       height={320}
                     />

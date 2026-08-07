@@ -42,7 +42,7 @@ export default async function SellerDetailPage({
               <Image
                 src={seller.profile_image_url}
                 alt={seller.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 width={216}
                 height={216}
               />
@@ -95,7 +95,7 @@ export default async function SellerDetailPage({
                       <Image
                         src={product.image_url}
                         alt={product.image_alt || product.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                         width={272}
                         height={272}
                       />
