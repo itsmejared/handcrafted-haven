@@ -8,11 +8,9 @@ import { authenticate } from "@/app/lib/actions";
 function LoginForm() {
   const searchParams = useSearchParams();
 
-  // NextAuth pasa por defecto "callbackUrl" cuando bloquea una ruta protegida
   const callbackUrl =
     searchParams.get("callbackUrl") || searchParams.get("redirect");
 
-  // Conectamos la Server Action mediante React standard hook
   const [errorMessage, dispatch, isPending] = useActionState(
     authenticate,
     undefined,
@@ -21,7 +19,6 @@ function LoginForm() {
   return (
     <main className="min-h-screen bg-[#F5F0E8] flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
-        {/* Banner Informativo (Si viene redirigido desde una ruta protegida) */}
         {callbackUrl && (
           <div className="p-4 rounded-2xl bg-[#7C9E87]/15 border border-[#7C9E87]/40 text-[#3D2B1F] text-xs font-medium flex items-start space-x-3 shadow-sm animate-fadeIn">
             <svg
@@ -66,7 +63,6 @@ function LoginForm() {
         {/* Form Card */}
         <div className="bg-[#FDFAF6] border border-[#7C9E87]/20 rounded-3xl p-8 shadow-xl backdrop-blur-sm transition-all">
           <form action={dispatch} className="space-y-6">
-            {/* Campo oculto para pasar la URL de destino al Server Action */}
             {callbackUrl && (
               <input type="hidden" name="redirectTo" value={callbackUrl} />
             )}
@@ -168,8 +164,8 @@ function LoginForm() {
               <Link
                 href={
                   callbackUrl
-                    ? `/register?callbackUrl=${encodeURIComponent(callbackUrl)}`
-                    : "/register"
+                    ? `/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`
+                    : "/signup"
                 }
                 className="text-[#C4622D] font-bold hover:underline transition-all"
               >

@@ -1,6 +1,5 @@
 import { getDb } from "@/app/lib/db";
 import { User } from "@/app/lib/types";
-import { revalidatePath } from "next/cache";
 
 export interface SellersQueryParams {
   page?: number;
@@ -91,30 +90,5 @@ export async function getSellerById(id: string): Promise<User | null> {
   } catch (error) {
     console.error(`Error fetching seller by ID (${id}):`, error);
     return null;
-  }
-}
-
-export async function updateUserProfile(
-  id: string,
-  data: {
-    bio?: string | null;
-    profile_image_url?: string | null;
-  },
-) {
-  try {
-    const db = getDb();
-    await db.query(
-      `UPDATE users 
-       SET bio = $1, profile_image_url = $2
-       WHERE id = $3`,
-      [data.bio || null, data.profile_image_url || null, id],
-    );
-    revalidatePath("/profile");
-    revalidatePath("/sellers");
-
-    return { success: true };
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    return { success: false, error: "Database error updating profile" };
   }
 }

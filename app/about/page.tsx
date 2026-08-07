@@ -53,15 +53,15 @@ export default function AboutPage() {
           </div>
           <div className="relative w-full max-w-md mx-auto md:max-w-none">
             <div className="absolute top-4 left-4 w-full aspect-[4/5] bg-[#7C9E87] rounded-3xl opacity-30"></div>
-          <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#FDFAF6]">
-            <Image
-              src="/guitar player.webp"
-              alt="Artisan playing a custom electric guitar"
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
+            <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#FDFAF6]">
+              <Image
+                src="/guitar player.webp"
+                alt="Artisan playing a custom electric guitar"
+                className="w-full h-full object-cover"
+                width={536}
+                height={672}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -74,8 +74,8 @@ export default function AboutPage() {
           </h2>
           <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-6"></div>
           <p className="text-[#3D2B1F] opacity-75 text-lg">
-            You have options for where to sell your work. Here&apos;s what
-            makes Handcrafted Haven different.
+            You have options for where to sell your work. Here&apos;s what makes
+            Handcrafted Haven different.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
@@ -117,7 +117,7 @@ export default function AboutPage() {
           Join a community built specifically for makers like you.
         </p>
         <Link
-          href="/register?role=seller"
+          href="/signup"
           className="inline-block px-8 py-4 bg-[#C4622D] text-white rounded-full text-lg font-medium hover:bg-[#3D2B1F] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
         >
           Become a Seller

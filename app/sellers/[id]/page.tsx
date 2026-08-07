@@ -5,6 +5,7 @@ import { getProductsBySeller } from "@/app/services/products";
 import Pagination from "@/app/ui/pagination";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
 import Image from "next/image";
+
 interface SellerDetailPageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -41,11 +42,11 @@ export default async function SellerDetailPage({
               <Image
                 src={seller.profile_image_url}
                 alt={seller.name}
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
+                width={216}
+                height={216}
               />
             ) : (
-
               <div className="w-full h-full flex items-center justify-center text-[#7C9E87] text-sm">
                 No photo yet
               </div>
@@ -90,14 +91,15 @@ export default async function SellerDetailPage({
                     href={`/product/${product.id}`}
                     className="block flex-1"
                   >
-          <div className="w-full aspect-square overflow-hidden bg-[#E8DFD3] relative">
-            <Image
-              src={product.image_url}
-              alt={product.image_alt || product.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-          </div>
+                    <div className="w-full aspect-square overflow-hidden bg-[#E8DFD3]">
+                      <Image
+                        src={product.image_url}
+                        alt={product.image_alt || product.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        width={272}
+                        height={272}
+                      />
+                    </div>
                     <div className="p-5 flex flex-col">
                       <span className="text-xs uppercase tracking-wider text-[#7C9E87] font-semibold mb-1">
                         {product.category_name}

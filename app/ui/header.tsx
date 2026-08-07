@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   Menu,
@@ -16,16 +16,20 @@ import {
 import { useCart } from "@/app/context/cart-context";
 import { useAuth } from "@/app/context/auth-context";
 
+const emptySubscribe = () => () => {};
+function useIsMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+}
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsMounted();
   const { itemCount } = useCart();
-
   const { user, logout } = useAuth();
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   return (
     <>
@@ -152,7 +156,7 @@ export default function Header() {
                 <span>Log in</span>
               </Link>
               <Link
-                href="/register"
+                href="/signup"
                 className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-[#C4622D] text-white rounded-full hover:bg-[#3D2B1F] transition-all shadow-sm"
               >
                 <UserPlus className="w-3.5 h-3.5" />
@@ -296,7 +300,7 @@ export default function Header() {
                   <span>Log in</span>
                 </Link>
                 <Link
-                  href="/register"
+                  href="/signup"
                   onClick={() => setMenuOpen(false)}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold bg-[#C4622D] text-white rounded-xl text-center"
                 >

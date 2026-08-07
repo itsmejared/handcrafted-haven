@@ -1,9 +1,10 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { getSellerById, updateUserProfile } from "@/app/services/sellers";
+import { getSellerById } from "@/app/services/sellers";
 import ProfileForm from "@/app/ui/profile/profile-form";
 import { Calendar, Mail, ShieldCheck } from "lucide-react";
+import { updateUserProfile } from "@/app/services/user";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -38,10 +39,10 @@ export default async function ProfilePage() {
   return (
     <main className="min-h-screen bg-[#F5F0E8] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-8">
-        {/* Header de la página */}
+        {/* Header */}
         <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-[#7C9E87]/20 shadow-sm">
           <div className="flex items-center gap-4">
-            {/* Foto de perfil o Iniciales */}
+            {/* Profile image */}
             <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#7C9E87]/40 bg-[#C4622D] text-white flex items-center justify-center text-2xl font-bold shrink-0">
               {user.profile_image_url ? (
                 <Image

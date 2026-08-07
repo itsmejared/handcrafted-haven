@@ -184,54 +184,55 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
             return (
               <Link
-            key={product.id}
-            href={`/product/${product.id}`}
-            className="group bg-[#F5F0E8] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
-          >
-            <div>
-              <div className="w-full h-48 overflow-hidden bg-gray-200 relative">
-                <Image
-                  src={product.image_url}
-                  alt={product.image_alt}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+                key={product.id}
+                href={`/product/${product.id}`}
+                className="group bg-[#F5F0E8] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
+              >
+                <div>
+                  <div className="w-full h-48 overflow-hidden bg-gray-200">
+                    <Image
+                      src={product.image_url}
+                      alt={product.image_alt}
+                      className="w-full h-full object-cover"
+                      width={389}
+                      height={192}
+                    />
+                  </div>
 
-            <div className="p-4">
-              <span className="text-xs font-semibold text-[#7C9E87] uppercase tracking-wider">
-                  {product.category_name}
-                </span>
-                  <h2 className="text-lg font-bold text-[#2C3E35] mt-1 line-clamp-1">
-                  {product.title}
-                </h2>
-                <p className="text-xs text-[#5C6F64] mb-2">
-                  by {product.seller_name}
-                  </p>
+                  <div className="p-4">
+                    <span className="text-xs font-semibold text-[#7C9E87] uppercase tracking-wider">
+                      {product.category_name}
+                    </span>
+                    <h2 className="text-lg font-bold text-[#2C3E35] mt-1 line-clamp-1">
+                      {product.title}
+                    </h2>
+                    <p className="text-xs text-[#5C6F64] mb-2">
+                      by {product.seller_name}
+                    </p>
 
-                <div className="flex items-center gap-1 text-sm text-amber-500 mb-3">
-                  <span>{stars}</span>
-                  <span className="text-xs text-[#5C6F64] ml-1">
-                    ({product.reviews_count}{" "}
-                    {product.reviews_count === 1 ? "review" : "reviews"})
-                  </span>
+                    <div className="flex items-center gap-1 text-sm text-amber-500 mb-3">
+                      <span>{stars}</span>
+                      <span className="text-xs text-[#5C6F64] ml-1">
+                        ({product.reviews_count}{" "}
+                        {product.reviews_count === 1 ? "review" : "reviews"})
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="p-4 pt-0 flex items-center justify-between mt-auto">
-              <span className="text-lg font-extrabold text-[#2C3E35]">
-                ${Number(product.price).toFixed(2)}
-              </span>
-              <AddToCartButton
-                id={product.id}
-                name={product.title}
-                price={Number(product.price)}
-                image={product.image_url}
-                seller={product.seller_name}
-              />
-            </div>
-          </Link>
+                <div className="p-4 pt-0 flex items-center justify-between mt-auto">
+                  <span className="text-lg font-extrabold text-[#2C3E35]">
+                    ${Number(product.price).toFixed(2)}
+                  </span>
+                  <AddToCartButton
+                    id={product.id}
+                    name={product.title}
+                    price={Number(product.price)}
+                    image={product.image_url}
+                    seller={product.seller_name}
+                  />
+                </div>
+              </Link>
             );
           })}
         </div>

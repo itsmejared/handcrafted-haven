@@ -1,5 +1,5 @@
-import { PageSpinnerSkeleton } from "@/app/ui/skeletons";
+import { HomeSkeleton } from "@/app/ui/skeletons";
 
-export default function Loading() {
-  return <PageSpinnerSkeleton />;
+export default function HomeLoading() {
+  return <HomeSkeleton />;
 }

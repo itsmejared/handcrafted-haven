@@ -5,21 +5,10 @@ import { getProducts } from "./services/products";
 import Image from "next/image";
 
 export default async function Home() {
-  let products: any[] = [];
-  let categories: any[] = [];
-
-  try {
-    categories = await getCategories();
-    const response = await getProducts({ page: 1, limit: 3, sort: "newest" });
-    ({ data: products } = response);
-  } catch (error) {
-    console.error(
-      "Database connection failed on the landing page server component:",
-      error,
-    );
-    categories = [];
-    products = [];
-  }
+  const [categories, { data: products }] = await Promise.all([
+    getCategories(),
+    getProducts({ page: 1, limit: 3, sort: "newest" }),
+  ]);
 
   return (
     <main>
@@ -48,7 +37,7 @@ export default async function Home() {
                 Shop Now
               </Link>
               <Link
-                href="/register"
+                href="/signup"
                 className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-[#C4622D] text-[#C4622D] rounded-full text-base sm:text-lg font-medium hover:bg-[#C4622D] hover:text-white transition-all duration-300"
               >
                 Become a Seller
@@ -60,21 +49,21 @@ export default async function Home() {
             className="relative w-full max-w-md mx-auto md:max-w-none"
             style={{ animation: "float 4s ease-in-out infinite" }}
           >
-          <div className="absolute top-6 -left-0 w-[calc(100%-1.5rem)] aspect-[4/5] bg-[#7C9E87] rounded-3xl opacity-30"></div>
-          <div className="absolute top-3 -left-0 w-[calc(100%-0.75rem)] aspect-[4/5] bg-[#C4622D] rounded-3xl opacity-20"></div>
+            <div className="absolute top-6 -left-0 w-[calc(100%-1.5rem)] aspect-[4/5] bg-[#7C9E87] rounded-3xl opacity-30"></div>
+            <div className="absolute top-3 -left-0 w-[calc(100%-0.75rem)] aspect-[4/5] bg-[#C4622D] rounded-3xl opacity-20"></div>
             <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#F5F0E8]">
-            <Image
-              src="/handcrafted-hero.webp"
-              alt="Colorful handcrafted guitars hanging in a row"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#3D2B1F] to-transparent"></div>
-            <div className="absolute bottom-4 left-4 text-white font-bold text-base sm:text-lg">
-              Handcrafted with ❤️
+              <Image
+                src="/handcrafted-hero.webp"
+                alt="Colorful handcrafted guitars hanging in a row"
+                className="w-full h-full object-cover"
+                width={600}
+                height={752}
+              />
+              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#3D2B1F] to-transparent"></div>
+              <div className="absolute bottom-4 left-4 text-white font-bold text-base sm:text-lg">
+                Handcrafted with ❤️
+              </div>
             </div>
-          </div>
             <div className="absolute -top-4 -right-4 bg-[#7C9E87] text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
               1000+ Vendors
             </div>
@@ -101,14 +90,15 @@ export default async function Home() {
               href={`/shop?category_id=${category.id}`}
               className="flex flex-col items-center p-8 bg-[#F5F0E8] rounded-2xl hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1 border-b-4 border-[#7C9E87]"
             >
-          <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg border-4 border-[#FDFAF6] mb-4 relative">
-            <Image
-              src={category.image_url}
-              alt={category.image_alt}
-              fill
-              className="object-cover"
-            />
-          </div>
+              <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg border-4 border-[#FDFAF6] mb-4">
+                <Image
+                  src={category.image_url}
+                  alt={category.image_alt}
+                  className="w-full h-full object-cover"
+                  width={88}
+                  height={88}
+                />
+              </div>
               <h3 className="text-xl font-bold text-[#3D2B1F] mb-2">
                 {category.name}
               </h3>
@@ -135,14 +125,15 @@ export default async function Home() {
               href={`/product/${product.id}`}
               className="group bg-[#F5F0E8] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
-            <div className="h-48 border-b-4 border-[#7C9E87] relative">
-            <Image
-              src={product.image_url}
-              alt={product.image_alt}
-              fill
-              className="object-cover"
-            />
-            </div>
+              <div className="h-48 border-b-4 border-[#7C9E87]">
+                <Image
+                  src={product.image_url}
+                  alt={product.image_alt}
+                  className="w-full h-full object-cover"
+                  width={320}
+                  height={188}
+                />
+              </div>
               <div className="p-6">
                 <h3 className="text-lg font-bold text-[#3D2B1F] mb-1">
                   {product.title}
