@@ -4,12 +4,11 @@ An innovative web application that provides a platform for artisans and crafters
 
 ## Team Members
 
-- Eduardo Jared Huayta (itsmejared)
-- Kristin Lind (KristinLind)
-- Isaac Miti (ikayz)
-- Immanuel Chinenye Njibie (immanuel4partner)
-- Rex Jonathan Kapoloma (Rex407)
-- Laston James Sichali
+- Eduardo Jared Huayta (`itsmejared`)
+- Kristin Lind (`KristinLind`)
+- Isaac Miti (`ikayz`)
+- Immanuel Chinenye Njibie (`immanuel4partner`)
+- Rex Jonathan Kapoloma (`Rex407`)
 
 ---
 
@@ -19,8 +18,8 @@ The application focuses on fostering a sense of community, supporting local arti
 
 - **Seller Profiles:** Authenticated sellers have dedicated profiles to showcase their craftsmanship and share their stories.
 - **Product Listings:** Artisans can list items for sale with descriptions, pricing, and images. Users can browse the catalog and filter by category or price range.
-- **Reviews and Ratings:** Any registered user can leave a rating (1-5 stars) and a written review for a product.
-- **Accessibility & Design:** The application complies with Web Content Accessibility Guidelines (WCAG) 2.1, Level AA. It features responsive web design principles for a seamless experience across desktop, tablet, and mobile devices.
+- **Interactive Reviews & Ratings (`/reviews`):** Authenticated users can leave ratings (1–5 stars) and optional written testimonials for products.
+- **Accessibility & Design:** Complies with Web Content Accessibility Guidelines (WCAG) 2.1, Level AA. Features responsive design principles across desktop, tablet, and mobile devices.
 
 ---
 
@@ -28,9 +27,10 @@ The application focuses on fostering a sense of community, supporting local arti
 
 This project is built as a unified Full-Stack application using the modern Next.js framework, eliminating the need for separate frontend and backend directories.
 
-- **Frontend:** React, Next.js (App Router), Tailwind CSS.
-- **Backend:** Node.js Serverless Functions via Next.js API Routes (`app/api/`).
+- **Frontend:** React, Next.js (App Router), Tailwind CSS, Lucide Icons.
+- **Backend:** Next.js Inline Server Actions.
 - **Database:** PostgreSQL hosted on Neon (Serverless Postgres).
+- **Validation:** Zod schemas for request payload validation.
 - **Project Management & Deployment:** Git, GitHub Projects, and Vercel.
 
 ---
@@ -44,9 +44,16 @@ handcrafted-haven/
 │ │ ├── categories/ # Category data fetching
 │ │ ├── products/ # Product catalog & filtering
 │ │ └── sellers/ # Artisan profile data
-│ ├── lib/ # Shared logic and configurations
+│ ├── lib/ # Shared logic, validations, and configurations
+│ │ ├── validations/ # Zod schemas (e.g., review.ts)
 │ │ ├── db.ts # PostgreSQL Lazy Singleton connection
 │ │ └── types.ts # TypeScript interfaces & Data Models
+│ ├── reviews/ # Interactive Reviews Module
+│ │ ├── loading.tsx # Next.js Streaming Skeleton UI
+│ │ └── page.tsx # Server Component with Inline Server Actions & Modals
+│ ├── services/ # Server-side Database Queries
+│ │ ├── products.ts # Product SQL services
+│ │ └── reviews.ts # Review UPSERT/DELETE SQL operations & Cache Invalidations
 │ ├── ui/ # Reusable UI components (Header, Footer)
 │ ├── layout.tsx # Global Root Layout
 │ └── page.tsx # Dynamic Landing Page (Server Component)
@@ -66,36 +73,34 @@ cd handcrafted-haven
 
 ### 2. Configure Environment Variables
 
-Create a .env.local file directly in the root directory of the project:
-
-# NEON POSTGRESQL CONNECTION STRING (DEVELOPMENT BRANCH)
+Create a `.env.local` file directly in the root directory of the project:
 
 DATABASE_URL=postgresql://your_user:your_password@your_neon_host/neondb?sslmode=require&uselibpqcompat=true
+AUTH_SECRET=YOUR_AUTH_SECRET
 
-# SECRET STRING FOR JWT SIGNING
-
-JWT_SECRET=your_super_secret_jwt_string_here
-
-> Note: Never commit the .env.local file to GitHub. Ensure it is listed in your .gitignore.
+> **Note:** Never commit the `.env.local` file to GitHub. Ensure it is listed in your `.gitignore`.
 
 ### 3. Install Dependencies
 
-Install the packages using pnpm from the root directory:
+Install the packages using `pnpm` from the root directory:
+
 pnpm install
 
 ### 4. Run the Development Server
 
 Start the unified frontend and backend environment:
+
 pnpm dev
 
-Open your browser and navigate to http://localhost:3000.
-To test the database connection, navigate to http://localhost:3000/api/categories.
+Open your browser and navigate to `http://localhost:3000`.  
+To test the database connection, navigate to `http://localhost:3000/api/categories`.
 
 ---
 
 ## Collaboration & Deployment Guidelines
 
-- **Pull Requests:** Never push directly to the main branch. Create dedicated task branches stemming from the GitHub Project Board issues.
+- **Pull Requests:** Never push directly to the `main` branch.
+- **Task Branches:** Create dedicated feature/task branches (e.g., `review-feature`) stemming from the GitHub Project Board issues.
 
 ## Test Accounts (for grading/demo purposes)
 
@@ -114,5 +119,3 @@ The following seller accounts exist in the database and are ready to use (all sh
 | Nick Fuentas — Weathered and Wood    | hello@weatheredandwood.com | password123 |
 
 You can log in as any of the above at `/login` to test seller features (editing profile, viewing "My Profile"). To test the customer experience, feel free to register a new account at `/register` and select "Customer" as the role.
-
-**Note:** `scripts/seed.js` will fully reset the database (all users, products, categories, reviews) if run with `node scripts/seed.js --force`. This is destructive and will erase any accounts/products created since the last seed. Only run it if you intend to reset everything back to this baseline test data.

@@ -35,6 +35,10 @@ export const authConfig = {
         return true;
       }
 
+      if (pathname === "/reviews" && isLoggedIn) {
+        return true;
+      }
+
       // ------------------------------------------------------------------
       // RULE 2: Protected Routes Verification
       // Protected: /product, /product/create, /product/:id/edit

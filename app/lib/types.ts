@@ -51,6 +51,19 @@ export interface Review {
   reviewer_name: string;
 }
 
+export interface ProductReview {
+  id?: string;
+  product_id: string;
+  product_title: string;
+  product_image: string;
+  category_name: string;
+  seller_name: string;
+  rating?: number | null;
+  comment?: string | null;
+  review_date?: string | null;
+  has_reviewed: boolean;
+}
+
 export interface ServiceResponse<T = unknown> {
   success: boolean;
   data?: T;
