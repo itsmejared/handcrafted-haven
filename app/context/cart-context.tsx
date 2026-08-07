@@ -8,7 +8,6 @@ import {
   ReactNode,
 } from "react";
 import { useToast } from "@/app/context/toast-context";
-import { useAuth } from "@/app/context/auth-context";
 
 export interface CartItem {
   id: string;
@@ -30,45 +29,30 @@ interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
-
-// Each logged-in user gets their own cart, scoped by user id.
-// Logged-out visitors get a shared "guest" cart, separate from every
-// real account, so switching users never mixes carts together.
-function getStorageKey(userId: string | null | undefined) {
-  return userId
-    ? `handcrafted_haven_cart_${userId}`
-    : "handcrafted_haven_cart_guest";
-}
+const CART_STORAGE_KEY = "handcrafted_haven_cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(CART_STORAGE_KEY);
+        return stored ? JSON.parse(stored) : [];
+      } catch (err) {
+        console.error("Failed to load cart from localStorage:", err);
+      }
+    }
+    return [];
+  });
+
   const { showToast } = useToast();
 
-  // Whenever the logged-in user changes (login, logout, or switching
-  // accounts), reload whichever cart belongs to that user.
   useEffect(() => {
-    if (typeof window === "undefined") return;
     try {
-      const key = getStorageKey(user?.id);
-      const stored = localStorage.getItem(key);
-      setItems(stored ? JSON.parse(stored) : []);
-    } catch (err) {
-      console.error("Failed to load cart from localStorage:", err);
-      setItems([]);
-    }
-  }, [user?.id]);
-
-  // Persist changes to that same user-scoped key.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const key = getStorageKey(user?.id);
-      localStorage.setItem(key, JSON.stringify(items));
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
     } catch (err) {
       console.error("Failed to save cart to localStorage:", err);
     }
-  }, [items, user?.id]);
+  }, [items]);
 
   function addItem(newItem: Omit<CartItem, "quantity">) {
     setItems((prev) => {
@@ -80,6 +64,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { ...newItem, quantity: 1 }];
     });
+
     showToast(`"${newItem.name}" added to cart!`, "success");
   }
 
@@ -98,11 +83,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function clearCart() {
     setItems([]);
-    try {
-      localStorage.removeItem(getStorageKey(user?.id));
-    } catch (err) {
-      console.error("Failed to clear cart from localStorage:", err);
-    }
+    localStorage.removeItem(CART_STORAGE_KEY);
   }
 
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
