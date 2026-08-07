@@ -53,7 +53,6 @@ export async function registerUser(input: RegisterInput): Promise<{
   user?: Omit<User, "password_hash">;
   error?: string;
 }> {
-  // 1. Validar datos con Zod
   const validation = registerSchema.safeParse(input);
   if (!validation.success) {
     return {
@@ -68,7 +67,6 @@ export async function registerUser(input: RegisterInput): Promise<{
   try {
     const db = getDb();
 
-    // 2. Verificar si el correo ya existe
     const existingUser = await db.query(
       "SELECT id FROM users WHERE LOWER(email) = LOWER($1);",
       [email],
@@ -81,11 +79,9 @@ export async function registerUser(input: RegisterInput): Promise<{
       };
     }
 
-    // 3. Encriptar la contraseña en el servidor
     const saltRounds = 10;
     const password_hash = await bcrypt.hash(password, saltRounds);
 
-    // 4. Insertar nuevo usuario
     const insertQuery = `
       INSERT INTO users (email, password_hash, name, role, bio, profile_image_url)
       VALUES ($1, $2, $3, $4, $5, $6)
