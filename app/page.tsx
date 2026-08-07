@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
 import AddToCartButton from "@/app/ui/add-to-cart-button";
 import { getCategories } from "@/app/services/categories";
 import { getProducts } from "./services/products";
+import Image from "next/image";
 
 export default async function Home() {
   const [categories, { data: products }] = await Promise.all([
@@ -49,8 +49,8 @@ export default async function Home() {
             className="relative w-full max-w-md mx-auto md:max-w-none"
             style={{ animation: "float 4s ease-in-out infinite" }}
           >
-          <div className="absolute top-6 -left-0 w-[calc(100%-1.5rem)] aspect-[4/5] bg-[#7C9E87] rounded-3xl opacity-30"></div>
-          <div className="absolute top-3 -left-0 w-[calc(100%-0.75rem)] aspect-[4/5] bg-[#C4622D] rounded-3xl opacity-20"></div>
+            <div className="absolute top-6 -left-0 w-[calc(100%-1.5rem)] aspect-[4/5] bg-[#7C9E87] rounded-3xl opacity-30"></div>
+            <div className="absolute top-3 -left-0 w-[calc(100%-0.75rem)] aspect-[4/5] bg-[#C4622D] rounded-3xl opacity-20"></div>
             <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#F5F0E8]">
               <Image
                 src="/handcrafted-hero.webp"
