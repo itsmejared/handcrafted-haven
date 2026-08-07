@@ -1,21 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/app/context/cart-context";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
 
+const emptySubscribe = () => () => {};
+function useIsMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+}
+
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal } = useCart();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsMounted();
 
-  // Evita el error de hidratación esperando a que el componente se monte en el cliente
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Mientras se hidrata el cliente, mostramos un estado neutro o esqueleto
   if (!mounted) {
     return (
       <main className="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
@@ -186,12 +189,12 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <button
-                disabled
-                className="w-full mt-6 py-4 bg-[#C4622D] text-white rounded-full text-base font-medium hover:bg-[#3D2B1F] transition-all duration-300 shadow-md disabled:opacity-75 disabled:cursor-not-allowed"
+              <Link
+                href="/checkout"
+                className="block w-full mt-6 py-4 bg-[#C4622D] text-white rounded-full text-base font-medium text-center hover:bg-[#3D2B1F] transition-all duration-300 shadow-md"
               >
-                Checkout (Coming Soon)
-              </button>
+                Checkout
+              </Link>
 
               <p className="text-xs text-center text-[#3D2B1F]/60 mt-4">
                 🔒 Secure checkout powered by Handcrafted Haven

@@ -3,6 +3,7 @@ import Pagination from "@/app/ui/pagination";
 import Link from "next/link";
 import { getProducts } from "@/app/services/products";
 import { getCategories } from "@/app/services/categories";
+import Image from "next/image";
 
 interface ShopPageProps {
   searchParams?: Promise<{
@@ -189,12 +190,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
               >
                 <div>
                   <div className="w-full h-48 overflow-hidden bg-gray-200">
-                    <img
+                    <Image
                       src={product.image_url}
                       alt={product.image_alt}
-                      loading="lazy"
-                      decoding="async"
                       className="w-full h-full object-cover"
+                      width={389}
+                      height={192}
                     />
                   </div>
 

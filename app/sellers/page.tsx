@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSellers } from "@/app/services/sellers";
 import Pagination from "@/app/ui/pagination";
+import Image from "next/image";
 
 interface SellersPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -42,12 +43,12 @@ export default async function SellersPage({ searchParams }: SellersPageProps) {
               >
                 <div className="w-full aspect-square overflow-hidden bg-[#E8DFD3]">
                   {seller.profile_image_url ? (
-                    <img
+                    <Image
                       src={seller.profile_image_url}
                       alt={seller.name}
-                      loading="lazy"
-                      decoding="async"
                       className="w-full h-full object-cover"
+                      width={320}
+                      height={320}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-[#7C9E87] text-sm">
@@ -77,7 +78,7 @@ export default async function SellersPage({ searchParams }: SellersPageProps) {
             Want to join them?
           </h2>
           <Link
-            href="/register"
+            href="/signup"
             className="inline-block px-8 py-4 bg-[#C4622D] text-white rounded-full text-lg font-medium hover:bg-[#3D2B1F] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
           >
             Register as a Seller

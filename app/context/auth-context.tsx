@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { logoutAction } from "@/app/lib/actions";
 import { useToast } from "@/app/context/toast-context";
-import { User } from "@/app/lib/types";
 
 export type AuthUser = {
   id: string;
