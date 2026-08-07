@@ -69,7 +69,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 ${Number(product.price).toFixed(2)}
               </p>
 
-              <p className="text-[#3D2B1F] opacity-80 leading-relaxed mb-8 whitespace-pre-line text-sm md:text-base">
+              <p className="text-[#3D2B1F] leading-relaxed mb-8 whitespace-pre-line text-sm md:text-base">
                 {product.description}
               </p>
 
@@ -102,7 +102,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                     </span>
                   </div>
                 </div>
-                <p className="text-sm text-[#3D2B1F] opacity-70 leading-relaxed">
+                <p className="text-sm text-[#3D2B1F] leading-relaxed">
                   {product.seller_bio || "No biography provided yet."}
                 </p>
               </div>

@@ -40,12 +40,12 @@ export default function AboutPage() {
               <span className="text-[#C4622D]">Not Algorithms</span>
             </h1>
             <div className="w-24 h-1 bg-[#7C9E87] mb-6 rounded-full"></div>
-            <p className="text-base md:text-lg text-[#3D2B1F] opacity-75 leading-relaxed mb-4">
+            <p className="text-base md:text-lg text-[#3D2B1F] leading-relaxed mb-4">
               Handcrafted Haven connects talented artisans with people who
               appreciate the beauty of handmade products. Every piece on our
               platform tells a story of passion, craftsmanship, and care.
             </p>
-            <p className="text-base md:text-lg text-[#3D2B1F] opacity-75 leading-relaxed">
+            <p className="text-base md:text-lg text-[#3D2B1F] leading-relaxed">
               We built this platform because independent makers deserve a home
               that understands handmade work — not a corner of a marketplace
               built for mass production.
@@ -73,7 +73,7 @@ export default function AboutPage() {
             Why Sell With Us Instead
           </h2>
           <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-6"></div>
-          <p className="text-[#3D2B1F] opacity-75 text-lg">
+          <p className="text-[#3D2B1F] text-lg">
             You have options for where to sell your work. Here&apos;s what makes
             Handcrafted Haven different.
           </p>
@@ -98,7 +98,7 @@ export default function AboutPage() {
                   <h3 className="text-lg font-bold text-[#3D2B1F] mb-2">
                     {item.title}
                   </h3>
-                  <p className="text-[#3D2B1F] opacity-70 text-sm leading-relaxed">
+                  <p className="text-[#3D2B1F] text-sm leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
@@ -113,7 +113,7 @@ export default function AboutPage() {
         <h2 className="text-2xl md:text-3xl font-bold text-[#3D2B1F] mb-4">
           Ready to share your craft?
         </h2>
-        <p className="text-[#3D2B1F] opacity-75 text-lg mb-8 max-w-xl mx-auto">
+        <p className="text-[#3D2B1F] text-lg mb-8 max-w-xl mx-auto">
           Join a community built specifically for makers like you.
         </p>
         <Link

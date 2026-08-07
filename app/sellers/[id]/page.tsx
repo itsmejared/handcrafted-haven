@@ -57,7 +57,7 @@ export default async function SellerDetailPage({
               {seller.name}
             </h1>
             <div className="w-24 h-1 bg-[#7C9E87] mx-auto md:mx-0 rounded-full mb-6"></div>
-            <p className="text-[#3D2B1F] opacity-75 text-lg leading-relaxed">
+            <p className="text-[#3D2B1F] text-lg leading-relaxed">
               {seller.bio || "This seller has not written a bio yet."}
             </p>
           </div>
@@ -75,7 +75,7 @@ export default async function SellerDetailPage({
 
         {products.length === 0 ? (
           <div className="text-center py-12 bg-[#F5F0E8] rounded-2xl max-w-2xl mx-auto">
-            <p className="text-[#3D2B1F] opacity-75 text-lg">
+            <p className="text-[#3D2B1F] text-lg">
               This seller has not published any products yet.
             </p>
           </div>

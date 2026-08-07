@@ -24,13 +24,13 @@ export default async function SellersPage({ searchParams }: SellersPageProps) {
             Meet Our Sellers
           </h1>
           <div className="w-24 h-1 bg-[#7C9E87] mx-auto rounded-full mb-6"></div>
-          <p className="text-[#3D2B1F] opacity-75 text-lg">
+          <p className="text-[#3D2B1F] text-lg">
             Get to know the artisans behind every handcrafted piece.
           </p>
         </div>
 
         {sellers.length === 0 ? (
-          <p className="text-center text-[#3D2B1F] opacity-70 py-12">
+          <p className="text-center text-[#3D2B1F] py-12">
             No sellers yet.
           </p>
         ) : (
