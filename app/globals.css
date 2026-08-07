@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #C4622D;
-  --secondary: #F5F0E8;
-  --accent: #7C9E87;
-  --dark: #3D2B1F;
-  --light: #FDFAF6;
+  --primary: #c4622d;
+  --secondary: #f5f0e8;
+  --accent: #7c9e87;
+  --dark: #3d2b1f;
+  --light: #fdfaf6;
 }
 
 body {
   background-color: var(--light);
   color: var(--dark);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 html,
@@ -20,8 +20,14 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translate(-50%, 10px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
 .animate-fade-in {
   animation: fadeIn 0.25s ease-out;
