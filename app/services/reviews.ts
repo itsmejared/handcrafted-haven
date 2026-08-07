@@ -1,5 +1,5 @@
 import { getDb } from "@/app/lib/db";
-import { reviewSchema } from "@/app/lib/validations/reviews";
+import { reviewSchema } from "@/app/lib/validations/review";
 import { Review, ProductReview } from "@/app/lib/types";
 import { revalidatePath } from "next/cache";
 
