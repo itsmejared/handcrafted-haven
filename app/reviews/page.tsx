@@ -163,7 +163,7 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
                     </div>
                     {item.comment && (
                       <p className="text-xs text-gray-600 italic line-clamp-2">
-                        "{item.comment}"
+                        &quot;{item.comment}&quot;
                       </p>
                     )}
                   </div>
