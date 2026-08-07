@@ -174,7 +174,7 @@ export default async function VendorProductsPage({
                           <td className="py-4 px-4 text-[#3D2B1F]/80">
                             <span className="inline-flex items-center gap-1">
                               ⭐ {displayRating}
-                              <span className="text-xs opacity-60">
+                              <span className="text-xs">
                                 ({product.reviews_count || 0})
                               </span>
                             </span>

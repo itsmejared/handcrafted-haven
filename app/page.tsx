@@ -24,7 +24,7 @@ export default async function Home() {
               <span className="text-[#C4622D]">Handcrafted</span> Treasures
             </h1>
             <div className="w-24 h-1 bg-[#7C9E87] mb-6 rounded-full"></div>
-            <p className="text-base sm:text-lg md:text-xl text-[#3D2B1F] mb-8 md:mb-10 opacity-75 leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-[#3D2B1F] mb-8 md:mb-10 leading-relaxed">
               Connect with talented artisans and find one-of-a-kind handmade
               items that tell a story. Every piece is made with passion and
               care.
@@ -102,7 +102,7 @@ export default async function Home() {
               <h3 className="text-xl font-bold text-[#3D2B1F] mb-2">
                 {category.name}
               </h3>
-              <p className="text-center text-[#3D2B1F] opacity-70">
+              <p className="text-center text-[#3D2B1F]">
                 {category.description}
               </p>
             </Link>
@@ -147,7 +147,7 @@ export default async function Home() {
                     {"☆".repeat(5 - Math.round(product.rating_average))}
                   </span>
 
-                  <span className="text-[#3D2B1F] opacity-60 ml-1">
+                  <span className="text-[#3D2B1F] ml-1">
                     <strong>
                       {product.reviews_count > 0 ? (
                         <>
