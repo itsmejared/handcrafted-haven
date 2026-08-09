@@ -52,13 +52,14 @@ export default async function Home() {
             <div className="absolute top-6 -left-0 w-[calc(100%-1.5rem)] aspect-[4/5] bg-[#7C9E87] rounded-3xl opacity-30"></div>
             <div className="absolute top-3 -left-0 w-[calc(100%-0.75rem)] aspect-[4/5] bg-[#C4622D] rounded-3xl opacity-20"></div>
             <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-[#F5F0E8]">
-              <Image
-                src="/handcrafted-hero.webp"
-                alt="Colorful handcrafted guitars hanging in a row"
-                className="w-full h-full object-cover"
-                width={600}
-                height={752}
-              />
+             <Image
+              src="/handcrafted-hero.webp"
+              alt="Colorful handcrafted guitars hanging in a row"
+              className="w-full h-full object-cover"
+              width={600}
+              height={752}
+              priority
+            />
               <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#3D2B1F] to-transparent"></div>
               <div className="absolute bottom-4 left-4 text-white font-bold text-base sm:text-lg">
                 Handcrafted with ❤️
